@@ -15,6 +15,9 @@ public class DGRoomClass
 
     Vector3[] cornersArray;
 
+    public int GetHeight() { return verticalSize; }
+    public int GetWidth() { return horizontalSize; }
+
     public DGRoomClass()
     {
         center = new DGPointClass();
@@ -65,7 +68,7 @@ public class DGRoomClass
         cornersArray[1] = new Vector3(cornerTL.GetX(), 0, cornerTL.GetY());
         cornersArray[2] = new Vector3(cornerTR.GetX(), 0, cornerTR.GetY());
         cornersArray[3] = new Vector3(cornerBR.GetX(), 0, cornerBR.GetY());
-        cornersArray[4] = new Vector3(cornerBL.GetX(), 0, cornerBL.GetY());
+        cornersArray[4] = new Vector3(cornerBL.GetX() + horizontalSize / 2, 0, cornerBL.GetY() + verticalSize / 2); //center
     }
 
     public bool IsTrivial()

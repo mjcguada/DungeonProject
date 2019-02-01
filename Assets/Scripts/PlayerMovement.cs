@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour {
     {
         horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
         verticalMove = Input.GetAxisRaw("Vertical") * runSpeed;
+        transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z); //Mantener fija la Y
         controller_.Move(new Vector3(horizontalMove * Time.fixedDeltaTime, 0, verticalMove * Time.fixedDeltaTime));
     }
 }

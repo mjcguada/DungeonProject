@@ -185,7 +185,7 @@ public class DGWindow : EditorWindow
                 //dgCore = ScriptableObject.CreateInstance<DGCore>();
             }
             /////AAAAAAAAAAAAAAAAAAAAAAAAAAA
-            dgCore.Init(dSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount, null);
+            dgCore.Init(dSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount);
             dgCore.Generate();
             EmitGeometry();
         }

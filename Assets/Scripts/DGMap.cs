@@ -54,6 +54,9 @@ public class DGMap
                 map[i, j] = true;
             }
         }
+
+        if (!isCoridor)           
+            DungeonInit.instance.Player_.SetActive(true);        
     }
 
     public void DrawInConsole()

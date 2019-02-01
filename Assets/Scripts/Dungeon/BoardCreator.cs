@@ -97,7 +97,7 @@ public class BoardCreator : MonoBehaviour
             if (i == rooms.Length * .5f)
             {
                 Vector3 playerPos = new Vector3(rooms[i].xPos, rooms[i].yPos, -1);
-                player.transform.position = playerPos;
+                //player.transform.position = playerPos;
                 //Instantiate(player, playerPos, Quaternion.identity);
             }
         }

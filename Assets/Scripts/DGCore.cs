@@ -32,9 +32,9 @@ public class DGCore : MonoBehaviour
     string floorRootName = "floor";
     string wallsRootName = "walls";
 
-    GameObject player_;
+    //GameObject player_;
 
-    public void Init(int _dSize, int _roomSize, int _roomSizeDelta, int _roomsCount, bool _isIntersections, int _coridorThickness, float _stepSize, float _whProp, int _coridorsCount, GameObject player)
+    public void Init(int _dSize, int _roomSize, int _roomSizeDelta, int _roomsCount, bool _isIntersections, int _coridorThickness, float _stepSize, float _whProp, int _coridorsCount)
     {
         dSize = _dSize;
         roomSize = _roomSize;
@@ -44,7 +44,7 @@ public class DGCore : MonoBehaviour
         stepSize = _stepSize;
         whProp = _whProp;
         coridorsCount = _coridorsCount;
-        player_ = player;
+        //player_ = player;
 
         ClearGeneratedWalls();
     }
@@ -70,7 +70,8 @@ public class DGCore : MonoBehaviour
             //проверяем, пересекается ли комната с уже созданными
             if(!newRoom.IsTooSmall(coridorThicknes) && !newRoom.IsIntersect(rooms))
             {
-                rooms.Add(newRoom);                
+                rooms.Add(newRoom);
+                //player_.transform.position = new Vector3(newRoom.GetWidth() / 2, 0, newRoom.GetHeight() / 2);
                 generatedRooms++;
             }
             else
@@ -98,25 +99,59 @@ public class DGCore : MonoBehaviour
                     }   
                 }
             }
-            player_.transform.position = new Vector3(rooms[0].GetCenter().GetX(), 0, rooms[0].GetCenter().GetY());
 
             //дальше формируем матрицу с проходимостью
             DGPointPairClass minMax = GetMinMax();
             dgMap = new DGMap(minMax.point02.GetY() - minMax.point01.GetY(), minMax.point02.GetX() - minMax.point01.GetX(), minMax.point01, minMax.point02);
+
+            //Borramos los posibles enemigos que pudiera haber de la anterior partida
+            for (int i = 0; i < DungeonInit.instance.enemigos.Count; i++) {
+                Destroy(DungeonInit.instance.enemigos[i]);
+            }
+            DungeonInit.instance.enemigos.Clear();
+
+            int contRoom = 0; //Contador de habitacion
             foreach (DGRoomClass room in rooms)
             {
-                dgMap.FillByRoom(room, false);
-            }
+                dgMap.FillByRoom(room, false);                
+
+                Vector3[] posiciones = room.GetPointsArray(); //Conseguimos corners
+                
+                if (contRoom == 0) //Instanciamos jugador
+                {
+                    float posX = posiciones[4].x * 5; //5 para que tenga sentido la escala
+                    float posY = posiciones[4].z * 5;
+                    //Set player position
+                    DungeonInit.instance.Player_.transform.position = new Vector3(posX, 0, posY);
+                }
+
+                if (contRoom > 0)
+                {
+                    for (int i = 0; i < DungeonInit.instance.maxEnemigosSala && DungeonInit.instance.enemigos.Count < DungeonInit.instance.numEnemigos; i++)
+                    {
+                        int r = Random.Range(1, 4); //cuatro posibles resultados (esquinas)
+                        
+                        Vector3 posAle = Vector3.Lerp(posiciones[r] * 5, posiciones[4] * 5, 0.25f); //Interpolamos una esquina aleatoria con el centro
+                        ComportamientoEnemigo aux = Instantiate(DungeonInit.instance.prefabEnemigo);
+                        DungeonInit.instance.enemigos.Add(aux);
+                        aux.gameObject.transform.position = posAle; 
+                    }
+                }
+                contRoom++;
+}
             foreach (DGRoomClass coridor in coridors)
             {
                 dgMap.FillByRoom(coridor, true);
             }
 
         }
-
-        player_.SetActive(true);
-
         
+
+        //DungeonInit.instance.Player_.transform.position = dgMap.GetCenterPosition(0, 0)*5;
+        
+        //player_.SetActive(true);
+
+
     }
 
     DGPointPairClass GetMinMax()
@@ -338,7 +373,7 @@ public class DGCore : MonoBehaviour
         int w = Random.Range(roomSize - roomSizeDelta, roomSize + roomSizeDelta);
         int h = Random.Range(roomSize - roomSizeDelta, roomSize + roomSizeDelta);
 
-        //player_.transform.position = new Vector3(w / 2, 0, h / 2);
+        
 
         return new DGRoomClass(cx, cy, w, h);
     }
@@ -486,7 +521,8 @@ public class DGCore : MonoBehaviour
                     if(center)
                     {//открытая клетка
                         EmitElement(floorPlate, stepSize * dgMap.GetCenterPosition(i, j), true, SetId(0, isSetId), isSetId);
-                        if(left && leftTop && top)
+                        //DungeonInit.instance.Player_.transform.position = dgMap.GetCenterPosition(i, j);
+                        if (left && leftTop && top)
                         {
                             
                         }

@@ -9,6 +9,13 @@ public class CameraFollow : MonoBehaviour {
     public float smoothSpeed = 0.125f;
     public Vector3 offset;
 
+    private Camera camera_;
+
+    private void Awake()
+    {
+        camera_ = GetComponent<Camera>();
+    }
+
     private void FixedUpdate()
     {
         Vector3 desiredPosition = target.position + offset;
@@ -17,5 +24,14 @@ public class CameraFollow : MonoBehaviour {
         transform.position = smoothedPosition;
 
         //transform.LookAt(target);
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
+        {
+            camera_.orthographicSize--;
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
+        {
+            camera_.orthographicSize++;
+        }
     }
 }

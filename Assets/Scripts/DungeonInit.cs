@@ -5,8 +5,10 @@ using UnityEngine.AI;
 
 public class DungeonInit : MonoBehaviour {
 
-    public GameObject Player_;    
+    public static DungeonInit instance;
 
+    [Header("GameObjects")]
+    public GameObject Player_;   
     public GameObject lineLGO;
     public GameObject lineRGO;
     public GameObject lineTGO;
@@ -21,11 +23,19 @@ public class DungeonInit : MonoBehaviour {
     public GameObject OCornerBRGO;
     public GameObject FloorPlate;
 
+    public ComportamientoEnemigo prefabEnemigo;
+    [HideInInspector] public List<ComportamientoEnemigo> enemigos;
+
+    [Header("Enemies settings")]
+    public int numEnemigos = 25;
+    public int maxEnemigosSala = 4;
+
+    [Header("Dungeon settings")]
     public int dungeonSize = 12;
     public int roomSize = 6;
     public int roomSizeDelta = 3;
     public int roomsCount = 4;
-    public int coridorThickness = 2;
+    int coridorThickness = 4;
     float oneStepSize;
     public string oneStepSizeStr = "5";
     public bool isAllowIntersection = false;
@@ -35,9 +45,10 @@ public class DungeonInit : MonoBehaviour {
     DGCore dgCore;
 
     // Use this for initialization
-    void Start () {        
+    void Start () {
+        instance = this;
         dgCore = GetComponent<DGCore>();
-        dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount, Player_);
+        dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount);
         dgCore.Generate();
 
         oneStepSize = (float)System.Convert.ToDouble(oneStepSizeStr);
@@ -48,7 +59,7 @@ public class DungeonInit : MonoBehaviour {
 	void Update ()
     {
         if (Input.GetButtonUp("Jump")){            
-            dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount, Player_);
+            dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount);
             dgCore.Generate();
 
             oneStepSize = (float)System.Convert.ToDouble(oneStepSizeStr);
