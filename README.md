@@ -1,2 +1,2 @@
 # DungeonProject
-Unity project
+Final grade project. Universidad Complutense de Madrid.

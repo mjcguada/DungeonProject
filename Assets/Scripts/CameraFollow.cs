@@ -8,12 +8,15 @@ public class CameraFollow : MonoBehaviour {
 
     public float smoothSpeed = 0.125f;
     public Vector3 offset;
+    public int cameraSize_ = 15;
 
     private Camera camera_;
 
     private void Awake()
     {
         camera_ = GetComponent<Camera>();
+        camera_.orthographicSize = cameraSize_;
+        Debug.Log("Establecida camera size " + cameraSize_, DLogType.Setup);
     }
 
     private void FixedUpdate()
@@ -27,11 +30,15 @@ public class CameraFollow : MonoBehaviour {
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
         {
-            camera_.orthographicSize--;
+            cameraSize_--;
+            camera_.orthographicSize = cameraSize_;
+            Debug.Log("Cambiado camera size " + cameraSize_, DLogType.Setup);
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
         {
-            camera_.orthographicSize++;
+            cameraSize_++;
+            camera_.orthographicSize = cameraSize_;
+            Debug.Log("Cambiado camera size " + cameraSize_, DLogType.Setup);
         }
     }
 }

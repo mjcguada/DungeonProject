@@ -16,5 +16,22 @@ public class PlayerMovement : MonoBehaviour {
         verticalMove = Input.GetAxisRaw("Vertical") * runSpeed;
         transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z); //Mantener fija la Y
         controller_.Move(new Vector3(horizontalMove * Time.fixedDeltaTime, 0, verticalMove * Time.fixedDeltaTime));
+
+        emitLog();
+    }
+
+    void emitLog()
+    {
+        if (verticalMove > 5)        
+            Debug.Log("El jugador se desplaza hacia arriba", DLogType.Input);
+        
+        if (verticalMove < -5)
+            Debug.Log("El jugador se desplaza hacia abajo", DLogType.Input);
+
+        if (horizontalMove > 5)
+            Debug.Log("El jugador se desplaza hacia la derecha", DLogType.Input);
+
+        if (horizontalMove < -5)
+            Debug.Log("El jugador se desplaza hacia la izquierda", DLogType.Input);
     }
 }

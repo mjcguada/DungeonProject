@@ -32,6 +32,7 @@ public class Weapon : MonoBehaviour
 
     void Shoot()
     {
+        Debug.Log("El jugador ha disparado una bala", DLogType.Input);
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         GameObject bala = Instantiate(balaPrefab);

@@ -41,10 +41,14 @@ public class ComportamientoEnemigo : MonoBehaviour {
     {
         if (collision.gameObject.GetComponent<Bola>())
         {
+            Debug.Log("Colision de bola con enemigo", DLogType.Physics);
             Destroy(collision.gameObject);
             vida -= 34; //3 golpes para morir
             if (vida <= 0)
+            {
                 Destroy(gameObject);
+                Debug.Log("Enemigo eliminado. Enemigos restantes: " + DungeonInit.instance.enemigos.Count.ToString(), DLogType.Log);
+            }
 
             sprite_.color = Color.red;
             Invoke("VolverColorOriginal", 0.3f);
