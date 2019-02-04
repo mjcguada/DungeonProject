@@ -1,2 +1,2 @@
 # DungeonProject
-Final grade project. Universidad Complutense de Madrid.
+Final project of the grade. Universidad Complutense de Madrid.
