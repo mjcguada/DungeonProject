@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class PlayerMovement : MonoBehaviour {
 
-
     public CharacterController controller_;
-    public float runSpeed = 10f;
+    public float runSpeed = 25f;
+    
     float horizontalMove = 0f;
-    float verticalMove = 0f;    
+    float verticalMove = 0f;
 
     private void FixedUpdate()
     {
@@ -34,4 +35,5 @@ public class PlayerMovement : MonoBehaviour {
         if (horizontalMove < -5)
             Debug.Log("El jugador se desplaza hacia la izquierda", DLogType.Input);
     }
+       
 }

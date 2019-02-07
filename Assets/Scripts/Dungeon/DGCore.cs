@@ -70,8 +70,7 @@ public class DGCore : MonoBehaviour
             //проверяем, пересекается ли комната с уже созданными
             if(!newRoom.IsTooSmall(coridorThicknes) && !newRoom.IsIntersect(rooms))
             {
-                rooms.Add(newRoom);
-                //player_.transform.position = new Vector3(newRoom.GetWidth() / 2, 0, newRoom.GetHeight() / 2);
+                rooms.Add(newRoom);                
                 generatedRooms++;
             }
             else
@@ -106,7 +105,7 @@ public class DGCore : MonoBehaviour
 
             //Borramos los posibles enemigos que pudiera haber de la anterior partida
             for (int i = 0; i < DungeonInit.instance.enemigos.Count; i++) {
-                Destroy(DungeonInit.instance.enemigos[i]);
+                Destroy(DungeonInit.instance.enemigos[i].gameObject);
             }
             DungeonInit.instance.enemigos.Clear();
 
@@ -127,7 +126,7 @@ public class DGCore : MonoBehaviour
 
                 if (contRoom > 0)
                 {
-                    for (int i = 0; i < DungeonInit.instance.maxEnemigosSala && DungeonInit.instance.enemigos.Count < DungeonInit.instance.numEnemigos; i++)
+                    for (int i = 0; i < GameManager.instance.numEnemiesRoom && DungeonInit.instance.enemigos.Count < GameManager.instance.numEnemiesMax; i++)
                     {
                         int r = Random.Range(1, 4); //cuatro posibles resultados (esquinas)
                         

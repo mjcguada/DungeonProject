@@ -25,16 +25,15 @@ public class DungeonInit : MonoBehaviour {
 
     public ComportamientoEnemigo prefabEnemigo;
     [HideInInspector] public List<ComportamientoEnemigo> enemigos;
-
-    [Header("Enemies settings")]
-    public int numEnemigos = 25;
-    public int maxEnemigosSala = 4;
+    
+    int numEnemigos = 25;
+    int maxEnemigosSala = 4;
 
     [Header("Dungeon settings")]
     public int dungeonSize = 12;
     public int roomSize = 6;
     public int roomSizeDelta = 3;
-    public int roomsCount = 4;
+    int roomsCount;
     int coridorThickness = 4;
     float oneStepSize;
     public string oneStepSizeStr = "5";
@@ -47,7 +46,23 @@ public class DungeonInit : MonoBehaviour {
     // Use this for initialization
     void Start () {
         instance = this;
-        dgCore = GetComponent<DGCore>();
+        roomsCount = GameManager.instance.numRoomsMax;
+        maxEnemigosSala = GameManager.instance.numEnemiesRoom;
+        numEnemigos = GameManager.instance.numEnemiesMax;
+
+        dgCore = GetComponent<DGCore>();               
+    }
+	
+	// Update is called once per frame
+	void Update ()
+    {
+        if (Input.GetButtonUp("Jump")){
+            GenerateDungeon();
+        }		
+	}
+
+    public void GenerateDungeon()
+    {
         dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount);
         dgCore.Generate();
 
@@ -56,17 +71,4 @@ public class DungeonInit : MonoBehaviour {
 
         Debug.Log("Dungeon generada: " + dgCore.GetRoomsCount() + " habitaciones, " + dgCore.GetCoridorsCount() + " pasillos. Número de enemigos: " + enemigos.Count + ".", DLogType.Setup);
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        if (Input.GetButtonUp("Jump")){            
-            dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount);
-            dgCore.Generate();
-
-            oneStepSize = (float)System.Convert.ToDouble(oneStepSizeStr);
-            dgCore.EmitGeometry(lineLGO, lineRGO, lineTGO, lineBGO, ICornerTLGO, ICornerTRGO, ICornerBLGO, ICornerBRGO, OCornerTLGO, OCornerTRGO, OCornerBLGO, OCornerBRGO, FloorPlate, oneStepSize, isSetIds);
-            Debug.Log("Dungeon generada: " + dgCore.GetRoomsCount() + " habitaciones, " + dgCore.GetCoridorsCount() + " pasillos. Número de enemigos: " + enemigos.Count +  ".", DLogType.Setup);
-        }		
-	}
 }

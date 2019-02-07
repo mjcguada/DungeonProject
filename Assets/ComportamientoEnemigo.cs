@@ -9,7 +9,7 @@ public class ComportamientoEnemigo : MonoBehaviour {
     Vector3 startPosition;
     GameObject player;
 
-    private int vida = 100;
+    private float vida = 100;
     SpriteRenderer sprite_;
     Color colorOriginal;
 
@@ -28,12 +28,16 @@ public class ComportamientoEnemigo : MonoBehaviour {
     void Start()
     {              
         agente = GetComponent<NavMeshAgent>();
-        agente.SetDestination(player.transform.position);                
+        agente.SetDestination(player.transform.position);
+
+        agente.speed = GameManager.instance.enemiesVelocity;
+        agente.angularSpeed = 120 + GameManager.instance.enemiesVelocity;
+        agente.acceleration = 10 + GameManager.instance.enemiesVelocity / 7;
     }    
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z); //mantener fija la Y
+        transform.position = new Vector3(transform.position.x, 1, transform.position.z); //mantener fija la Y
         agente.SetDestination(player.transform.position);      
     }
 
@@ -42,8 +46,10 @@ public class ComportamientoEnemigo : MonoBehaviour {
         if (collision.gameObject.GetComponent<Bola>())
         {
             Debug.Log("Colision de bola con enemigo", DLogType.Physics);
-            Destroy(collision.gameObject);
-            vida -= 34; //3 golpes para morir
+            Destroy(collision.gameObject); //Destruir pelota
+
+            vida -= GameManager.instance.playerDamage; 
+
             if (vida <= 0)
             {
                 Destroy(gameObject);
@@ -51,12 +57,15 @@ public class ComportamientoEnemigo : MonoBehaviour {
             }
 
             sprite_.color = Color.red;
-            Invoke("VolverColorOriginal", 0.3f);
+            StopCoroutine(VolverColorOriginal());
+            StartCoroutine(VolverColorOriginal());
         }
-    }
+    }    
 
-    void VolverColorOriginal()
+    IEnumerator VolverColorOriginal()
     {
+        yield return new WaitForSeconds(0.3f);
         sprite_.color = colorOriginal;
+        yield break;        
     }
 }

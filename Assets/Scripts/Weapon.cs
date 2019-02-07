@@ -3,9 +3,9 @@ using System.Collections;
 
 public class Weapon : MonoBehaviour
 {
-    public float fireRate = 0;
-    public float Damage = 10;
-    public float fuerza = 6;
+    public float fireRate = 0;    
+    [Range(1, 10)]
+    public int fuerza = 6;
 
     float timeToFire = 0;
     public GameObject balaPrefab;    
@@ -37,7 +37,7 @@ public class Weapon : MonoBehaviour
 
         GameObject bala = Instantiate(balaPrefab);
         bala.transform.position = transform.position;        
-        bala.GetComponent<Rigidbody>().velocity = (mousePosition - transform.position).normalized * fuerza * Time.deltaTime;        
+        bala.GetComponent<Rigidbody>().velocity = (mousePosition - transform.position).normalized * fuerza * 500 * Time.deltaTime;        
        
         Destroy(bala, 5f);       
     }

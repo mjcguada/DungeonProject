@@ -16,7 +16,7 @@ public class CameraFollow : MonoBehaviour {
     {
         camera_ = GetComponent<Camera>();
         camera_.orthographicSize = cameraSize_;
-        Debug.Log("Establecida camera size " + cameraSize_, DLogType.Setup);
+        Debug.Log("Establecida camera size " + cameraSize_, DLogType.CameraSetup);
     }
 
     private void FixedUpdate()
