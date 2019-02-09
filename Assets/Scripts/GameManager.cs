@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
@@ -15,6 +16,7 @@ public class GameManager : MonoBehaviour {
     [HideInInspector] public int enemiesFirerate;
     [HideInInspector] public int playerFirerate;
 
+    [HideInInspector] public int dungeonSize;
     [HideInInspector] public int numRoomsMax;
     [HideInInspector] public int numEnemiesMax;
     [HideInInspector] public int numEnemiesRoom;
@@ -23,6 +25,13 @@ public class GameManager : MonoBehaviour {
     [HideInInspector] public int rachaDerrotas = 0;
     [HideInInspector] public int rachaVictorias = 0;
 
+    [HideInInspector] public int coleccCogidos = 0;
+    [HideInInspector] public int coleccMax = 0;
+
+    public Text ColeccText;
+
+    public Canvas canvas_;
+
     public static GameManager instance;
 
     private void Awake()
@@ -30,6 +39,8 @@ public class GameManager : MonoBehaviour {
         if (instance != null && instance != this)
         {            
             Destroy(this.gameObject);
+            Destroy(ColeccText.gameObject);
+            Destroy(canvas_.gameObject);
             return;
         }
         else
@@ -41,19 +52,30 @@ public class GameManager : MonoBehaviour {
             //this.LoadAd();
         }
         DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(ColeccText.gameObject);
+        DontDestroyOnLoad(canvas_.gameObject);
 
         calcularDificultad();
     }
 
     // Use this for initialization
     void Start ()
-    {        
+    {
         //DungeonInit.instance.GenerateDungeon();
-	}
+        ActualizarInterfaz();
+    }
+
+    public void ActualizarInterfaz()
+    {
+        ColeccText.text = "Coleccionables: " + coleccCogidos.ToString() + "/" + DungeonInit.instance.coleccionables.Count.ToString();
+    }
 
     //Actualizar variables dependientes de la dificultad (enemigos y dungeon)
     public void calcularDificultad()
     {
+        //Reiniciamos progreso del nivel
+        coleccCogidos = 0;
+
         //Stats
         playerDamage = 50 - dificultad*3.5f;
         enemiesDamage = 10 + dificultad * 3;
@@ -62,6 +84,8 @@ public class GameManager : MonoBehaviour {
         numEnemiesRoom = 4;
         numRoomsMax = 2 + dificultad*2;
         numEnemiesMax = (int)(10 + dificultad * 4.5f);
+        coleccMax = 4 + dificultad/3;
+        dungeonSize = 30;
 
         if (dificultad > 6)
         {
@@ -70,12 +94,16 @@ public class GameManager : MonoBehaviour {
             numEnemiesMax = (int)(12 + dificultad * Random.Range(4, 7));
         }
 
-        if (dificultad >= 4) //Dividir en sectores la dificultad        
-            numRoomsMax = 2 + dificultad * Random.Range(2, 4); 
+        if (dificultad >= 4)
+        { //Dividir en sectores la dificultad        
+            numRoomsMax = 2 + dificultad * Random.Range(2, 4);
+            dungeonSize = 60;
+        }
 
         Debug.Log("Numero de intentos: " + numPartidas + ", Dificultad: " + dificultad +".", DLogType.difficultyAdjusting);
         Debug.Log("Racha de victorias: " + rachaVictorias + ", racha de derrotas: " + rachaDerrotas + ".", DLogType.difficultyAdjusting);
         Debug.Log("Velocidad enemigos: " + enemiesVelocity + ", Player damage: " + playerDamage + ", Enemies damage: " + enemiesDamage + ".", DLogType.difficultyAdjusting);
+        Debug.Log("Coleccionables max: " + coleccMax + ".", DLogType.difficultyAdjusting);
     }
 
     public void Victoria()
@@ -109,5 +137,11 @@ public class GameManager : MonoBehaviour {
         }
         calcularDificultad();        
         SceneManager.LoadSceneAsync("Test_Dungeon");        
+    }
+
+    public void CogerColeccionable()
+    {
+        coleccCogidos++;
+        ActualizarInterfaz();
     }
 }

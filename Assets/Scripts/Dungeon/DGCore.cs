@@ -32,8 +32,6 @@ public class DGCore : MonoBehaviour
     string floorRootName = "floor";
     string wallsRootName = "walls";
 
-    //GameObject player_;
-
     public void Init(int _dSize, int _roomSize, int _roomSizeDelta, int _roomsCount, bool _isIntersections, int _coridorThickness, float _stepSize, float _whProp, int _coridorsCount)
     {
         dSize = _dSize;
@@ -44,14 +42,13 @@ public class DGCore : MonoBehaviour
         stepSize = _stepSize;
         whProp = _whProp;
         coridorsCount = _coridorsCount;
-        //player_ = player;
 
         ClearGeneratedWalls();
     }
 
     public bool isCorrect()
     {
-        if(rooms != null && rooms.Count > 1)
+        if (rooms != null && rooms.Count > 1)
         {
             return true;
         }
@@ -64,13 +61,13 @@ public class DGCore : MonoBehaviour
         int genStep = 0;
         rooms = new List<DGRoomClass>();
         coridors = new List<DGRoomClass>();
-        while(generatedRooms < roomsCount && genStep < generationCycleLimits)
+        while (generatedRooms < roomsCount && genStep < generationCycleLimits)
         {
             DGRoomClass newRoom = GenerateRandomRoom();
             //проверяем, пересекается ли комната с уже созданными
-            if(!newRoom.IsTooSmall(coridorThicknes) && !newRoom.IsIntersect(rooms))
+            if (!newRoom.IsTooSmall(coridorThicknes) && !newRoom.IsIntersect(rooms))
             {
-                rooms.Add(newRoom);                
+                rooms.Add(newRoom);
                 generatedRooms++;
             }
             else
@@ -79,23 +76,23 @@ public class DGCore : MonoBehaviour
             }
         }
 
-        if(rooms.Count > 1)
+        if (rooms.Count > 1)
         {//есть хотя бы две комнаты, строим коридоры
             //для каждой ищем ближайшую
-            for(int i = 0; i < rooms.Count; i++)
+            for (int i = 0; i < rooms.Count; i++)
             {
                 //int j = GetRoomToRoomClosestIndex(i);
                 int[] toRoomClostArray = GetRoomToRoomClosestIndexesArray(i);
-                for (int j = 0; j < coridorsCount; j++ )
+                for (int j = 0; j < coridorsCount; j++)
                 {
-                    if(j < toRoomClostArray.Length)
+                    if (j < toRoomClostArray.Length)
                     {
                         int toRoomId = toRoomClostArray[j];
-                        if(toRoomId != i && toRoomId > -1)
+                        if (toRoomId != i && toRoomId > -1)
                         {
                             BuildCoridor(i, toRoomId);
                         }
-                    }   
+                    }
                 }
             }
 
@@ -103,19 +100,13 @@ public class DGCore : MonoBehaviour
             DGPointPairClass minMax = GetMinMax();
             dgMap = new DGMap(minMax.point02.GetY() - minMax.point01.GetY(), minMax.point02.GetX() - minMax.point01.GetX(), minMax.point01, minMax.point02);
 
-            //Borramos los posibles enemigos que pudiera haber de la anterior partida
-            /*for (int i = 0; i < DungeonInit.instance.enemigos.Count; i++) {
-                Destroy(DungeonInit.instance.enemigos[i].gameObject);
-            }
-            DungeonInit.instance.enemigos.Clear();*/
-
             int contRoom = 0; //Contador de habitacion
             foreach (DGRoomClass room in rooms)
             {
-                dgMap.FillByRoom(room, false);                
+                dgMap.FillByRoom(room, false);
 
                 Vector3[] posiciones = room.GetPointsArray(); //Conseguimos corners
-                
+
                 if (contRoom == 0) //Instanciamos jugador
                 {
                     float posX = posiciones[4].x * 5; //5 para que tenga sentido la escala
@@ -123,31 +114,61 @@ public class DGCore : MonoBehaviour
                     //Set player position
                     DungeonInit.instance.Player_.transform.position = new Vector3(posX, 0, posY);
                 }
-
+                //Colocacion enemigos
                 if (contRoom > 0)
                 {
                     for (int i = 0; i < GameManager.instance.numEnemiesRoom && DungeonInit.instance.enemigos.Count < GameManager.instance.numEnemiesMax; i++)
                     {
-                        int r = Random.Range(1, 4); //cuatro posibles resultados (esquinas)
-                        
-                        Vector3 posAle = Vector3.Lerp(posiciones[r] * 5, posiciones[4] * 5, 0.25f); //Interpolamos una esquina aleatoria con el centro
+                        int r = Random.Range(0, 4); //cuatro posibles resultados (esquinas)
+
+                        Vector3 posAle = Vector3.Lerp(posiciones[r] * 5, posiciones[4] * 5, 0.5f); //Interpolamos una esquina aleatoria con el centro
                         ComportamientoEnemigo aux = Instantiate(DungeonInit.instance.prefabEnemigo);
                         DungeonInit.instance.enemigos.Add(aux);
-                        aux.gameObject.transform.position = posAle; 
+                        aux.gameObject.transform.position = posAle;
                     }
                 }
+
+                //Siempre nos aseguramos un coleccionable al menos
+                if (contRoom == 2)
+                {
+                    int r = Random.Range(0, 4); //cuatro posibles resultados (esquinas)
+
+                    Coleccionable aux = Instantiate(DungeonInit.instance.prefabColeccionable);
+                    Vector3 posAle = Vector3.Lerp(posiciones[r] * 5, posiciones[4] * 5, 0.5f); //Interpolamos una esquina aleatoria con el centro
+                    DungeonInit.instance.coleccionables.Add(aux);
+                    posAle.y = 1.5f;
+                    aux.gameObject.transform.position = posAle;
+                }
+
+                if (contRoom > 3)
+                {
+                    int r = Random.Range(1, 3); //cuatro posibles resultados (esquinas)
+
+                    if (r % 2 == 0)
+                    {
+                        r = Random.Range(0, 4); //cuatro posibles resultados (esquinas)
+
+                        Coleccionable aux = Instantiate(DungeonInit.instance.prefabColeccionable);
+                        Vector3 posAle = Vector3.Lerp(posiciones[r] * 5, posiciones[4] * 5, 0.5f); //Interpolamos una esquina aleatoria con el centro
+                        posAle.y = 1.5f;
+                        DungeonInit.instance.coleccionables.Add(aux);
+                        aux.gameObject.transform.position = posAle;
+                    }
+
+                }
+
                 contRoom++;
-}
+            }
             foreach (DGRoomClass coridor in coridors)
             {
                 dgMap.FillByRoom(coridor, true);
             }
 
         }
-        
+
 
         //DungeonInit.instance.Player_.transform.position = dgMap.GetCenterPosition(0, 0)*5;
-        
+
         //player_.SetActive(true);
 
 
@@ -160,30 +181,30 @@ public class DGCore : MonoBehaviour
         DGPointClass rMax = rooms[0].GetCorner(2);
         toReturn.point01 = new DGPointClass(rMin);
         toReturn.point02 = new DGPointClass(rMax);
-        foreach(DGRoomClass room in rooms)
+        foreach (DGRoomClass room in rooms)
         {
             rMin = room.GetCorner(0);
             rMax = room.GetCorner(2);
-            if(rMin.GetX() < toReturn.point01.GetX())
+            if (rMin.GetX() < toReturn.point01.GetX())
             {
                 toReturn.point01.SetX(rMin.GetX());
             }
-            if(rMin.GetY() < toReturn.point01.GetY())
+            if (rMin.GetY() < toReturn.point01.GetY())
             {
                 toReturn.point01.SetY(rMin.GetY());
             }
 
-            if(rMax.GetX() > toReturn.point02.GetX())
+            if (rMax.GetX() > toReturn.point02.GetX())
             {
                 toReturn.point02.SetX(rMax.GetX());
             }
-            if(rMax.GetY() > toReturn.point02.GetY())
+            if (rMax.GetY() > toReturn.point02.GetY())
             {
                 toReturn.point02.SetY(rMax.GetY());
             }
         }
 
-        foreach(DGRoomClass coridor in coridors)
+        foreach (DGRoomClass coridor in coridors)
         {
             rMin = coridor.GetCorner(0);
             rMax = coridor.GetCorner(2);
@@ -230,12 +251,12 @@ public class DGCore : MonoBehaviour
 
         coridors.Add(newCoridor01);
         coridors.Add(newCoridor02);
-        
+
     }
 
     int Sign(int i)
     {
-        if(i >= 0)
+        if (i >= 0)
         {
             return 1;
         }
@@ -262,13 +283,13 @@ public class DGCore : MonoBehaviour
         float closestDistance = 2 * dSize;
         DGRoomClass room = rooms[i];
         int closestIndex = -1;
-        for (int j = 0; j < rooms.Count; j++ )
+        for (int j = 0; j < rooms.Count; j++)
         {
-            if(i != j)
+            if (i != j)
             {
                 //считаем расстояние от каждой вершины комнаты до каждой вершины j-ой комнаты и берем минимальное
                 float d = room.GetCornerDistance(rooms[j]);
-                if(d < closestDistance)
+                if (d < closestDistance)
                 {
                     closestDistance = d;
                     closestIndex = j;
@@ -283,9 +304,9 @@ public class DGCore : MonoBehaviour
     int[] GetRoomToRoomClosestIndexesArray(int id)
     {
         Dictionary<int, float> roomDistanceMap = new Dictionary<int, float>();
-        for (int i = 0; i < rooms.Count; i++ )
+        for (int i = 0; i < rooms.Count; i++)
         {
-            if(i != id)
+            if (i != id)
             {
                 float d = rooms[id].GetCornerDistance(rooms[i]);//расстояние от текущей комнаты до i-ой
                 roomDistanceMap.Add(i, d);
@@ -296,11 +317,11 @@ public class DGCore : MonoBehaviour
         int[] toReturn = new int[roomDistanceMap.Count];
         float recordMin = -1f;
         int recordMinKey = -1;
-        for (int i = 0; i < toReturn.Length; i++ )
+        for (int i = 0; i < toReturn.Length; i++)
         {
             float min = 0f;
             int minKey = -1;
-            foreach(int k in roomDistanceMap.Keys)
+            foreach (int k in roomDistanceMap.Keys)
             {
                 if (minKey == -1)
                 {
@@ -312,7 +333,7 @@ public class DGCore : MonoBehaviour
                 }
                 else
                 {
-                    if(roomDistanceMap[k] > recordMin && roomDistanceMap[k] < min)
+                    if (roomDistanceMap[k] > recordMin && roomDistanceMap[k] < min)
                     {
                         min = roomDistanceMap[k];
                         minKey = k;
@@ -328,10 +349,10 @@ public class DGCore : MonoBehaviour
         return toReturn;
     }
 
-    string arrayToString(int [] array)
+    string arrayToString(int[] array)
     {
         string str = "";
-        for (int i = 0; i < array.Length; i++ )
+        for (int i = 0; i < array.Length; i++)
         {
             str += array[i] + " ";
         }
@@ -342,7 +363,7 @@ public class DGCore : MonoBehaviour
     string dictToString(Dictionary<int, float> dict)
     {
         string str = "";
-        foreach(int k in dict.Keys)
+        foreach (int k in dict.Keys)
         {
             str += k.ToString() + ": " + dict[k].ToString() + "; ";
         }
@@ -351,26 +372,26 @@ public class DGCore : MonoBehaviour
 
     float FilterRandom(bool isWidth, float value)
     {
-        if(isWidth)
+        if (isWidth)
         {
             return value * Mathf.Pow(propCoefficient, whProp);
         }
         else
         {
-            return value * Mathf.Pow(propCoefficient, -1* whProp);
+            return value * Mathf.Pow(propCoefficient, -1 * whProp);
         }
     }
 
     DGRoomClass GenerateRandomRoom()
     {
         float xRandom = Random.Range(-1f, 1f);
-        float yRandom = Random.Range(-1f, 1f);        
+        float yRandom = Random.Range(-1f, 1f);
 
         int cx = (int)(Sign(xRandom) * dSize * FilterRandom(true, Mathf.Abs(xRandom)) / (2 * Mathf.Pow(propCoefficient, Mathf.Abs(whProp))));
         int cy = (int)(Sign(yRandom) * dSize * FilterRandom(false, Mathf.Abs(yRandom)) / (2 * Mathf.Pow(propCoefficient, Mathf.Abs(whProp))));
-        
+
         int w = Random.Range(roomSize - roomSizeDelta, roomSize + roomSizeDelta);
-        int h = Random.Range(roomSize - roomSizeDelta, roomSize + roomSizeDelta);       
+        int h = Random.Range(roomSize - roomSizeDelta, roomSize + roomSizeDelta);
 
         return new DGRoomClass(cx, cy, w, h);
     }
@@ -379,7 +400,7 @@ public class DGCore : MonoBehaviour
     {
         Vector3[] a = rooms[roomIndex].GetPointsArray();
         Vector3[] toReturn = new Vector3[a.Length];
-        for (int i = 0; i < a.Length; i++ )
+        for (int i = 0; i < a.Length; i++)
         {
             toReturn[i] = a[i] * stepSize;
         }
@@ -423,11 +444,11 @@ public class DGCore : MonoBehaviour
         {
             DestroyImmediate(rootObject);
         }
-        if(floorRoot != null)
+        if (floorRoot != null)
         {
             DestroyImmediate(floorRoot);
         }
-        if(wallsRoot != null)
+        if (wallsRoot != null)
         {
             DestroyImmediate(wallsRoot);
         }
@@ -435,22 +456,22 @@ public class DGCore : MonoBehaviour
 
     void EmitElement(GameObject element, Vector3 position, bool isFloor, int id, bool isColorize)
     {
-        if(element != null)
+        if (element != null)
         {
             GameObject newInst = (GameObject)PrefabUtility.InstantiatePrefab(element);
             newInst.transform.position = position;
             newInst.GetComponent<Renderer>().material = new Material(newInst.GetComponent<Renderer>().sharedMaterial);
             DRId drIdComponent = newInst.GetComponent<DRId>();
-            if(drIdComponent != null)
+            if (drIdComponent != null)
             {
                 drIdComponent.id = id;
             }
-            if(isColorize)
+            if (isColorize)
             {
                 SetColor(id, newInst);
             }
             wallModels.Add(newInst);
-            if(!isFloor)
+            if (!isFloor)
             {
                 newInst.transform.SetParent(wallsRoot.transform);
             }
@@ -458,7 +479,7 @@ public class DGCore : MonoBehaviour
             {
                 newInst.transform.SetParent(floorRoot.transform);
             }
-            
+
         }
     }
 
@@ -476,7 +497,7 @@ public class DGCore : MonoBehaviour
 
     int SetId(int id, bool isSet)
     {
-        if(isSet)
+        if (isSet)
         {
             return id;
         }
@@ -511,17 +532,17 @@ public class DGCore : MonoBehaviour
                 for (int j = 0; j < v + 1; j++)
                 {
                     bool center = dgMap.GetCell(i, j);
-                    bool left = dgMap.GetCell(i, j-1);
-                    bool top = dgMap.GetCell(i-1, j);
-                    bool leftTop = dgMap.GetCell(i-1, j-1);
+                    bool left = dgMap.GetCell(i, j - 1);
+                    bool top = dgMap.GetCell(i - 1, j);
+                    bool leftTop = dgMap.GetCell(i - 1, j - 1);
 
-                    if(center)
+                    if (center)
                     {//открытая клетка
                         EmitElement(floorPlate, stepSize * dgMap.GetCenterPosition(i, j), true, SetId(0, isSetId), isSetId);
                         //DungeonInit.instance.Player_.transform.position = dgMap.GetCenterPosition(i, j);
                         if (left && leftTop && top)
                         {
-                            
+
                         }
                         else if (left && leftTop && !top)
                         {
@@ -588,7 +609,7 @@ public class DGCore : MonoBehaviour
                         }
                         else if (!left && !leftTop && !top)
                         {
-                            
+
                         }
                     }
                 }

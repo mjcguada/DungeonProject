@@ -5,12 +5,6 @@ namespace RockVR.Video.Demo
 {
     public class AutoRotate : MonoBehaviour
     {
-        // Use this for initialization
-        void Start()
-        {
-
-        }
-
         // Update is called once per frame
         void Update()
         {

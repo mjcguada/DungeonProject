@@ -24,8 +24,10 @@ public class DungeonInit : MonoBehaviour {
     public GameObject FloorPlate;
 
     public ComportamientoEnemigo prefabEnemigo;
+    public Coleccionable prefabColeccionable;
     [HideInInspector] public List<ComportamientoEnemigo> enemigos;
-    
+    [HideInInspector] public List<Coleccionable> coleccionables;
+
     int numEnemigos;
     int maxEnemigosSala;
 
@@ -46,6 +48,7 @@ public class DungeonInit : MonoBehaviour {
     // Use this for initialization
     void Start () {
         instance = this;
+        dungeonSize = GameManager.instance.dungeonSize;
         roomsCount = GameManager.instance.numRoomsMax;
         maxEnemigosSala = GameManager.instance.numEnemiesRoom;
         numEnemigos = GameManager.instance.numEnemiesMax;
@@ -59,16 +62,18 @@ public class DungeonInit : MonoBehaviour {
     {
         if (Input.GetButtonUp("Jump")){
             GameManager.instance.calcularDificultad();
-            roomsCount = GameManager.instance.numRoomsMax;
-            maxEnemigosSala = GameManager.instance.numEnemiesRoom;
-            numEnemigos = GameManager.instance.numEnemiesMax;
-
             GenerateDungeon();
         }		
 	}
 
     public void GenerateDungeon()
     {
+        //Actualizar variables
+        dungeonSize = GameManager.instance.dungeonSize;
+        roomsCount = GameManager.instance.numRoomsMax;
+        maxEnemigosSala = GameManager.instance.numEnemiesRoom;
+        numEnemigos = GameManager.instance.numEnemiesMax;
+
         dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount);
         dgCore.Generate();
 
@@ -76,5 +81,6 @@ public class DungeonInit : MonoBehaviour {
         dgCore.EmitGeometry(lineLGO, lineRGO, lineTGO, lineBGO, ICornerTLGO, ICornerTRGO, ICornerBLGO, ICornerBRGO, OCornerTLGO, OCornerTRGO, OCornerBLGO, OCornerBRGO, FloorPlate, oneStepSize, isSetIds);
 
         Debug.Log("Dungeon generada: " + dgCore.GetRoomsCount() + " habitaciones, " + dgCore.GetCoridorsCount() + " pasillos. Número de enemigos: " + enemigos.Count + ".", DLogType.Setup);
+        GameManager.instance.ActualizarInterfaz();
     }
 }
