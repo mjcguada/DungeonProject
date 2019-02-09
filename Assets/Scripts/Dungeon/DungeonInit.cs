@@ -26,13 +26,13 @@ public class DungeonInit : MonoBehaviour {
     public ComportamientoEnemigo prefabEnemigo;
     [HideInInspector] public List<ComportamientoEnemigo> enemigos;
     
-    int numEnemigos = 25;
-    int maxEnemigosSala = 4;
+    int numEnemigos;
+    int maxEnemigosSala;
 
     [Header("Dungeon settings")]
-    public int dungeonSize = 12;
-    public int roomSize = 6;
-    public int roomSizeDelta = 3;
+    public int dungeonSize = 60;
+    public int roomSize = 8;
+    public int roomSizeDelta = 4;
     int roomsCount;
     int coridorThickness = 4;
     float oneStepSize;
@@ -50,13 +50,19 @@ public class DungeonInit : MonoBehaviour {
         maxEnemigosSala = GameManager.instance.numEnemiesRoom;
         numEnemigos = GameManager.instance.numEnemiesMax;
 
-        dgCore = GetComponent<DGCore>();               
+        dgCore = GetComponent<DGCore>();
+        GenerateDungeon();
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
         if (Input.GetButtonUp("Jump")){
+            GameManager.instance.calcularDificultad();
+            roomsCount = GameManager.instance.numRoomsMax;
+            maxEnemigosSala = GameManager.instance.numEnemiesRoom;
+            numEnemigos = GameManager.instance.numEnemiesMax;
+
             GenerateDungeon();
         }		
 	}

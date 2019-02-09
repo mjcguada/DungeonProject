@@ -104,10 +104,10 @@ public class DGCore : MonoBehaviour
             dgMap = new DGMap(minMax.point02.GetY() - minMax.point01.GetY(), minMax.point02.GetX() - minMax.point01.GetX(), minMax.point01, minMax.point02);
 
             //Borramos los posibles enemigos que pudiera haber de la anterior partida
-            for (int i = 0; i < DungeonInit.instance.enemigos.Count; i++) {
+            /*for (int i = 0; i < DungeonInit.instance.enemigos.Count; i++) {
                 Destroy(DungeonInit.instance.enemigos[i].gameObject);
             }
-            DungeonInit.instance.enemigos.Clear();
+            DungeonInit.instance.enemigos.Clear();*/
 
             int contRoom = 0; //Contador de habitacion
             foreach (DGRoomClass room in rooms)
@@ -468,10 +468,10 @@ public class DGCore : MonoBehaviour
         {
             go.GetComponent<Renderer>().sharedMaterial.color = new Color(190f / 255f, 190f / 255f, 190f / 255f);
         }
-        else
+        /*else
         {
             go.GetComponent<Renderer>().sharedMaterial.color = DRCustomEditor.HSVToRGB(DRCustomEditor.GetSin(id, 0f), 0.5f, 0.8f);
-        }
+        }*/
     }
 
     int SetId(int id, bool isSet)
