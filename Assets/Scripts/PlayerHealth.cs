@@ -10,8 +10,9 @@ public class PlayerHealth : MonoBehaviour {
 
     bool vulnerable = true;
 
-    private void Start()
+    void Start()
     {
+        vida = 100;
         healthSlider.value = vida;
     }
 

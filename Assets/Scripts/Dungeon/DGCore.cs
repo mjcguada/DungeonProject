@@ -115,7 +115,7 @@ public class DGCore : MonoBehaviour
                     DungeonInit.instance.Player_.transform.position = new Vector3(posX, 0, posY);
                 }
                 //Colocacion enemigos
-                if (contRoom > 0)
+                if (contRoom >= 2)
                 {
                     for (int i = 0; i < GameManager.instance.numEnemiesRoom && DungeonInit.instance.enemigos.Count < GameManager.instance.numEnemiesMax; i++)
                     {
@@ -165,13 +165,6 @@ public class DGCore : MonoBehaviour
             }
 
         }
-
-
-        //DungeonInit.instance.Player_.transform.position = dgMap.GetCenterPosition(0, 0)*5;
-
-        //player_.SetActive(true);
-
-
     }
 
     DGPointPairClass GetMinMax()

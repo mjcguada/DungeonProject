@@ -32,13 +32,16 @@ public class Weapon : MonoBehaviour
 
     void Shoot()
     {
-        Debug.Log("El jugador ha disparado una bala", DLogType.Input);
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        if (!GameManager.instance.pausado)
+        {
+            Debug.Log("El jugador ha disparado una bala", DLogType.Input);
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        GameObject bala = Instantiate(balaPrefab);
-        bala.transform.position = transform.position;        
-        bala.GetComponent<Rigidbody>().velocity = (mousePosition - transform.position).normalized * fuerza * 500 * Time.deltaTime;        
-       
-        Destroy(bala, 5f);       
+            GameObject bala = Instantiate(balaPrefab);
+            bala.transform.position = transform.position;
+            bala.GetComponent<Rigidbody>().velocity = (mousePosition - transform.position).normalized * fuerza * 500 * Time.deltaTime;
+
+            Destroy(bala, 5f);
+        }
     }
 }

@@ -29,8 +29,12 @@ public class GameManager : MonoBehaviour {
     [HideInInspector] public int coleccMax = 0;
 
     public Text ColeccText;
-
     public Canvas canvas_;
+    public GameObject panel_;
+    //public Slider healthSlider;
+    //public PlayerHealth playerHealth_;    
+
+    [HideInInspector] public bool pausado = false;    
 
     public static GameManager instance;
 
@@ -41,6 +45,8 @@ public class GameManager : MonoBehaviour {
             Destroy(this.gameObject);
             Destroy(ColeccText.gameObject);
             Destroy(canvas_.gameObject);
+            //Destroy(healthSlider.gameObject);
+            //Destroy(playerHealth_.gameObject);
             return;
         }
         else
@@ -54,6 +60,8 @@ public class GameManager : MonoBehaviour {
         DontDestroyOnLoad(this.gameObject);
         DontDestroyOnLoad(ColeccText.gameObject);
         DontDestroyOnLoad(canvas_.gameObject);
+        //DontDestroyOnLoad(healthSlider.gameObject);
+        //DontDestroyOnLoad(playerHealth_.gameObject);
 
         calcularDificultad();
     }
@@ -65,8 +73,20 @@ public class GameManager : MonoBehaviour {
         ActualizarInterfaz();
     }
 
+    public void Pausar()
+    {
+        pausado = !pausado;
+        Time.timeScale = 0;
+        panel_.SetActive(pausado);
+        if (pausado)
+            Time.timeScale = 0;
+        else
+            Time.timeScale = 1;
+    }
+
     public void ActualizarInterfaz()
     {
+        //healthSlider.value = playerHealth_.vida;
         ColeccText.text = "Coleccionables: " + coleccCogidos.ToString() + "/" + DungeonInit.instance.coleccionables.Count.ToString();
     }
 
@@ -75,6 +95,7 @@ public class GameManager : MonoBehaviour {
     {
         //Reiniciamos progreso del nivel
         coleccCogidos = 0;
+        //playerHealth_.vida = 100;
 
         //Stats
         playerDamage = 50 - dificultad*3.5f;
@@ -130,7 +151,7 @@ public class GameManager : MonoBehaviour {
 
         rachaDerrotas++;
         rachaVictorias = 0;
-        if (rachaDerrotas >= 2)
+        if (rachaDerrotas >= 3)
         {
             rachaDerrotas = 0;
             dificultad--;

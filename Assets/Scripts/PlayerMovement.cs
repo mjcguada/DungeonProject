@@ -19,6 +19,9 @@ public class PlayerMovement : MonoBehaviour {
         controller_.Move(new Vector3(horizontalMove * Time.fixedDeltaTime, 0, verticalMove * Time.fixedDeltaTime));
 
         emitLog();
+
+        if (Input.GetKeyUp(KeyCode.P))
+            GameManager.instance.Pausar();
     }
 
     void emitLog()

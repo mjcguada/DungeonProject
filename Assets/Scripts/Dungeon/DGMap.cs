@@ -51,8 +51,14 @@ public class DGMap
             }
         }
 
-        if (!isCoridor)           
-            DungeonInit.instance.Player_.SetActive(true);        
+        if (!isCoridor)
+        {
+            DungeonInit.instance.Player_.SetActive(true);
+            Vector3 playerPos = DungeonInit.instance.Player_.transform.position;
+            playerPos.y = 0;
+            DungeonInit.instance.controlsPlane.transform.position = playerPos;
+            DungeonInit.instance.controlsPlane.SetActive(true);
+        }
     }
 
     public void DrawInConsole()

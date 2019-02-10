@@ -25,6 +25,7 @@ public class DungeonInit : MonoBehaviour {
 
     public ComportamientoEnemigo prefabEnemigo;
     public Coleccionable prefabColeccionable;
+    public GameObject controlsPlane;
     [HideInInspector] public List<ComportamientoEnemigo> enemigos;
     [HideInInspector] public List<Coleccionable> coleccionables;
 
