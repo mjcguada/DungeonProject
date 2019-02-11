@@ -47,7 +47,8 @@ public class DungeonInit : MonoBehaviour {
     void Start () {
         instance = this;
         dungeonSize = GameManager.instance.dungeonSize;
-        roomsCount = GameManager.instance.numRoomsMax;       
+        roomsCount = GameManager.instance.numRoomsMax;
+        GameManager.instance.calcularDificultad();
 
         dgCore = GetComponent<DGCore>();
         GenerateDungeon();

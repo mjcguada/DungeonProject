@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour {
     
     public Slider healthSlider;
-    public int vida = 100;
+    [HideInInspector] public int vida = 100;
 
     bool vulnerable = true;
 
@@ -15,8 +15,8 @@ public class PlayerHealth : MonoBehaviour {
         vida = 100;
         healthSlider.value = vida;
     }
-
-    private void OnCollisionEnter(Collision collision)
+   
+    private void OnCollisionStay(Collision collision)
     {
         if (collision.gameObject.GetComponent<ComportamientoEnemigo>())
         {
@@ -32,12 +32,12 @@ public class PlayerHealth : MonoBehaviour {
                 {
                     Debug.Log("Player eliminado", DLogType.Physics);
                     gameObject.SetActive(false);
-                    healthSlider.value = 0;                    
+                    healthSlider.value = 0;
                     GameManager.instance.Derrota();
                 }
 
                 Debug.Log("Player dañado", DLogType.Physics);
-            }                              
+            }
         }
     }
 

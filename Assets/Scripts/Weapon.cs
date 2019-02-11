@@ -35,6 +35,8 @@ public class Weapon : MonoBehaviour
         if (!GameManager.instance.pausado)
         {
             Debug.Log("El jugador ha disparado una bala", DLogType.Input);
+            GameManager.instance.disparosRealizados++; //Performance
+
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
             GameObject bala = Instantiate(balaPrefab);

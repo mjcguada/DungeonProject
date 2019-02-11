@@ -23,21 +23,25 @@ public class CameraFollow : MonoBehaviour {
         Vector3 desiredPosition = target.position + offset;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
 
-        transform.position = smoothedPosition;
-
-        //transform.LookAt(target);
+        transform.position = smoothedPosition;        
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
         {
-            GameManager.instance.cameraSize_--;
-            camera_.orthographicSize = GameManager.instance.cameraSize_;
-            Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
+            if (GameManager.instance.cameraSize_ > 20) //Tamaño minimo permitido
+            {
+                GameManager.instance.cameraSize_--;
+                camera_.orthographicSize = GameManager.instance.cameraSize_;
+                Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
+            }
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
         {
-            GameManager.instance.cameraSize_++;
-            camera_.orthographicSize = GameManager.instance.cameraSize_;
-            Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
+            if (GameManager.instance.cameraSize_ < 35) //Tamaño maximo permitido
+            {
+                GameManager.instance.cameraSize_++;
+                camera_.orthographicSize = GameManager.instance.cameraSize_;
+                Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
+            }
         }
     }
 }

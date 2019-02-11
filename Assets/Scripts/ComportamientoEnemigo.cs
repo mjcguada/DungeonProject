@@ -31,8 +31,8 @@ public class ComportamientoEnemigo : MonoBehaviour {
         agente.SetDestination(player.transform.position);
 
         agente.speed = GameManager.instance.enemiesVelocity;
-        agente.angularSpeed = 120 + GameManager.instance.enemiesVelocity;
-        agente.acceleration = 10 + GameManager.instance.enemiesVelocity / 7;
+        agente.angularSpeed = 40 + GameManager.instance.enemiesVelocity;
+        agente.acceleration = 20 + GameManager.instance.dificultad * 6 +  GameManager.instance.enemiesVelocity / 7;
     }    
 	
 	// Update is called once per frame
@@ -46,6 +46,7 @@ public class ComportamientoEnemigo : MonoBehaviour {
         if (collision.gameObject.GetComponent<Bola>())
         {
             Debug.Log("Colision de bola con enemigo", DLogType.Physics);
+            GameManager.instance.disparosAcertados++;
             Destroy(collision.gameObject); //Destruir pelota
 
             vida -= GameManager.instance.playerDamage; 
