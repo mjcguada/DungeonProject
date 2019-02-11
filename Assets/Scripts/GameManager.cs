@@ -185,4 +185,9 @@ public class GameManager : MonoBehaviour
         ActualizarInterfaz();
         Debug.Log("Coleccionable recogido. Num recogidos: " + coleccCogidos + ", Colecc totales: " + DungeonInit.instance.coleccionables.Count.ToString() + ".", DLogType.Physics);
     }
+
+    public void BotonSalir()
+    {
+        Application.Quit();
+    }
 }
