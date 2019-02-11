@@ -27,10 +27,7 @@ public class DungeonInit : MonoBehaviour {
     public Coleccionable prefabColeccionable;
     public GameObject controlsPlane;
     [HideInInspector] public List<ComportamientoEnemigo> enemigos;
-    [HideInInspector] public List<Coleccionable> coleccionables;
-
-    int numEnemigos;
-    int maxEnemigosSala;
+    [HideInInspector] public List<Coleccionable> coleccionables;    
 
     [Header("Dungeon settings")]
     public int dungeonSize = 60;
@@ -50,9 +47,7 @@ public class DungeonInit : MonoBehaviour {
     void Start () {
         instance = this;
         dungeonSize = GameManager.instance.dungeonSize;
-        roomsCount = GameManager.instance.numRoomsMax;
-        maxEnemigosSala = GameManager.instance.numEnemiesRoom;
-        numEnemigos = GameManager.instance.numEnemiesMax;
+        roomsCount = GameManager.instance.numRoomsMax;       
 
         dgCore = GetComponent<DGCore>();
         GenerateDungeon();
@@ -72,9 +67,7 @@ public class DungeonInit : MonoBehaviour {
         //Actualizar variables
         dungeonSize = GameManager.instance.dungeonSize;
         roomsCount = GameManager.instance.numRoomsMax;
-        maxEnemigosSala = GameManager.instance.numEnemiesRoom;
-        numEnemigos = GameManager.instance.numEnemiesMax;
-
+        
         dgCore.Init(dungeonSize, roomSize, roomSizeDelta, roomsCount, isAllowIntersection, coridorThickness, oneStepSize, whProportion, coridorsCount);
         dgCore.Generate();
 

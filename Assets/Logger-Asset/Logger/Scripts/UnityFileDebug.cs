@@ -75,7 +75,7 @@ namespace SSS
 
             public void UpdateFilePath()
             {
-                filePath = Application.dataPath + "/Logs"; //useAbsolutePath ? absolutePath : Application.persistentDataPath;
+                filePath = Application.persistentDataPath + @"\"; //Application.dataPath + "/Logs"; //useAbsolutePath ? absolutePath : Application.persistentDataPath;
                 filePathFull = System.IO.Path.Combine(filePath, fileName + "." + System.DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss") + FileExtensionFromType(fileType));
             }
 

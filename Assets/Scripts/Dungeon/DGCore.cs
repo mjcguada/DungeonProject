@@ -451,7 +451,7 @@ public class DGCore : MonoBehaviour
     {
         if (element != null)
         {
-            GameObject newInst = (GameObject)PrefabUtility.InstantiatePrefab(element);
+            GameObject newInst = Instantiate(element); //(GameObject)PrefabUtility.InstantiatePrefab(element); //Solo editor
             newInst.transform.position = position;
             newInst.GetComponent<Renderer>().material = new Material(newInst.GetComponent<Renderer>().sharedMaterial);
             DRId drIdComponent = newInst.GetComponent<DRId>();

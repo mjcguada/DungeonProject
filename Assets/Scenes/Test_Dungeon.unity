@@ -1163,7 +1163,6 @@ MonoBehaviour:
   target: {fileID: 958405205}
   smoothSpeed: 0.125
   offset: {x: 0, y: 5, z: 0}
-  cameraSize_: 27
 --- !u!81 &1327081843
 AudioListener:
   m_ObjectHideFlags: 0
@@ -1333,12 +1332,12 @@ Prefab:
     - target: {fileID: 114000012063238170, guid: de22bd77f0f87f345abe1d33ad15f9df,
         type: 2}
       propertyPath: customPath
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114000012063238170, guid: de22bd77f0f87f345abe1d33ad15f9df,
         type: 2}
       propertyPath: customPathFolder
-      value: C:/Users/PcCom/Documents/Unity Projects/TFG/Assets/Videos
+      value: C:/Users/PcCom/AppData/LocalLow/DefaultCompany/TFG
       objectReference: {fileID: 0}
     - target: {fileID: 114000012063238170, guid: de22bd77f0f87f345abe1d33ad15f9df,
         type: 2}
@@ -1640,8 +1639,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 0
-  startOnAwake: 0
-  captureTime: 1200
+  startOnAwake: 1
+  captureTime: 5
   quitAfterCapture: 0
   _videoCaptures:
   - {fileID: 1223415094}
@@ -1702,6 +1701,7 @@ MonoBehaviour:
   rachaVictorias: 0
   coleccCogidos: 0
   coleccMax: 0
+  cameraSize_: 25
   ColeccText: {fileID: 511255727}
   canvas_: {fileID: 98229104}
   panel_: {fileID: 1701481464}

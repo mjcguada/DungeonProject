@@ -27,7 +27,7 @@ namespace RockVR.Video.Editor
                 videoCapture.customPath = EditorGUILayout.Toggle(new GUIContent("Use Custom Path", "Use external folder Path"), videoCapture.customPath);
                 if (videoCapture.customPath)
                 {
-                    videoCapture.customPathFolder = Application.dataPath + "/Videos";  // EditorGUILayout.TextField("Custom Path Folder", videoCapture.customPathFolder);
+                    videoCapture.customPathFolder = Application.persistentDataPath; //Application.dataPath + "/Videos";  // EditorGUILayout.TextField("Custom Path Folder", videoCapture.customPathFolder);
                     PathConfig.SaveFolder = videoCapture.customPathFolder + @"\";
                 }
                 else
@@ -94,7 +94,7 @@ namespace RockVR.Video.Editor
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo()
                 {
-                    FileName = Application.dataPath + "/Videos",
+                    FileName = Application.persistentDataPath, //Application.dataPath + "/Videos",
                     UseShellExecute = true,
                     Verb = "open"
                 });

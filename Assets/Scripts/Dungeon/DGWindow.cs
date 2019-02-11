@@ -3,11 +3,11 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DGWindow : EditorWindow
+public class DGWindow //: EditorWindow
 {
     static DGWindow curWindow;
 
-    GameObject lineLGO;
+    /*GameObject lineLGO;
     GameObject lineRGO;
     GameObject lineTGO;
     GameObject lineBGO;
@@ -19,7 +19,7 @@ public class DGWindow : EditorWindow
     GameObject OCornerTRGO;
     GameObject OCornerBLGO;
     GameObject OCornerBRGO;
-    GameObject FloorPlate;
+    GameObject FloorPlate;*/
 
     int dSize = 12;
     int roomSize = 6;
@@ -36,22 +36,22 @@ public class DGWindow : EditorWindow
 
     //static bool drawHelpers = true;
 
-    float paramLabelWidth = 150f;
-    float paramValueWidth = 30;
+    //float paramLabelWidth = 150f;
+    //float paramValueWidth = 30;
 
     Vector2 scrollPosition;
 
 
-    [MenuItem("Tools/Dungeon Tools/Dungeon Creator")]
-    static void Init()
+    //[MenuItem("Tools/Dungeon Tools/Dungeon Creator")]
+    /*static void Init()
     {
-        curWindow = (DGWindow)EditorWindow.GetWindow(typeof(DGWindow));
-        curWindow.titleContent = new GUIContent("DCreator");
+        //curWindow = (DGWindow)EditorWindow.GetWindow(typeof(DGWindow));
+        //curWindow.titleContent = new GUIContent("DCreator");
         //curWindow.minSize = new Vector2(512, 560);
         //SceneView.onSceneGUIDelegate += OnScene;
-    }
+    }*/
 
-    void OnGUI()
+    /*void OnGUI()
     {
         scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
         GUILayout.BeginHorizontal();
@@ -173,7 +173,7 @@ public class DGWindow : EditorWindow
 
         EditorGUILayout.EndScrollView();
         Repaint();
-    }
+    }*/
 
     void ClickGenerate()
     {
@@ -203,7 +203,7 @@ public class DGWindow : EditorWindow
 
     void EmitGeometry()
     {
-        if(dgCore != null && dgCore.isCorrect())
+        /*if(dgCore != null && dgCore.isCorrect())
         {
             oneStepSize = (float)System.Convert.ToDouble(oneStepSizeStr);
             dgCore.EmitGeometry(lineLGO, lineRGO, lineTGO, lineBGO, ICornerTLGO, ICornerTRGO, ICornerBLGO, ICornerBRGO, OCornerTLGO, OCornerTRGO, OCornerBLGO, OCornerBRGO, FloorPlate, oneStepSize, isSetIds);
@@ -211,7 +211,7 @@ public class DGWindow : EditorWindow
         else
         {
             Debug.Log("Nothing to build. Generate the scheme at first.");
-        }
+        }*/
         
     }
 }

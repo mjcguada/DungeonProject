@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class ComportamientoEnemigo : MonoBehaviour {
 
     NavMeshAgent agente;
-    Vector3 startPosition;
+    //Vector3 startPosition;
     GameObject player;
 
     private float vida = 100;
@@ -22,7 +22,7 @@ public class ComportamientoEnemigo : MonoBehaviour {
         colorOriginal = sprite_.color;
 
         player = GameObject.Find("Player");
-        startPosition = transform.position;
+        //startPosition = transform.position;
     }
 
     void Start()

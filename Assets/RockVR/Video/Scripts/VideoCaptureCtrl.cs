@@ -325,7 +325,7 @@ namespace RockVR.Video
             // Create default root folder if not created.
             if (!Directory.Exists(PathConfig.SaveFolder))
             {
-                Directory.CreateDirectory(Application.dataPath + "/Videos" + @"\");
+                Directory.CreateDirectory(Application.persistentDataPath); //Application.dataPath + "/Videos" + @"\");
             }
             status = StatusType.NOT_START;
         }

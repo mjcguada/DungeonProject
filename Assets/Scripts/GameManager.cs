@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour {
     [HideInInspector] public int coleccCogidos = 0;
     [HideInInspector] public int coleccMax = 0;
 
+    [HideInInspector] public int cameraSize_ = 25;
+
     public Text ColeccText;
     public Canvas canvas_;
     public GameObject panel_;
@@ -58,7 +60,7 @@ public class GameManager : MonoBehaviour {
             //this.LoadAd();
         }
         DontDestroyOnLoad(this.gameObject);
-        DontDestroyOnLoad(ColeccText.gameObject);
+        //DontDestroyOnLoad(ColeccText); //Warning (con gameobject)
         DontDestroyOnLoad(canvas_.gameObject);
         //DontDestroyOnLoad(healthSlider.gameObject);
         //DontDestroyOnLoad(playerHealth_.gameObject);
@@ -164,5 +166,6 @@ public class GameManager : MonoBehaviour {
     {
         coleccCogidos++;
         ActualizarInterfaz();
+        Debug.Log("Coleccionable recogido. Num recogidos: " + coleccCogidos + ", Colecc totales: " + DungeonInit.instance.coleccionables.Count.ToString() + ".", DLogType.Physics);
     }
 }

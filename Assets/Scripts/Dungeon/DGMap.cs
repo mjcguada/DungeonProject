@@ -54,6 +54,7 @@ public class DGMap
         if (!isCoridor)
         {
             DungeonInit.instance.Player_.SetActive(true);
+            //Panel de controles
             Vector3 playerPos = DungeonInit.instance.Player_.transform.position;
             playerPos.y = 0;
             DungeonInit.instance.controlsPlane.transform.position = playerPos;
