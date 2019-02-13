@@ -33,12 +33,17 @@ public class GameManager : MonoBehaviour
     //Parametros performance del jugador:
     [HideInInspector] public int disparosRealizados = 0;
     [HideInInspector] public int disparosAcertados = 0;
+ 
+    [HideInInspector] public float tiempoTotalRonda = 0;
+
+    public float slowDownTime = 1.2f;
 
     public Text ColeccText;
     public Text CronoText;
     public Text DifficultyText;
     public Canvas canvas_;
-    public GameObject panel_;    
+    public GameObject panel_;
+    public Image damageImage;
 
     [HideInInspector] public bool pausado = false;
 
@@ -67,12 +72,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {        
         ActualizarInterfaz();
-    }
-
-    private void Update()
-    {
-        CronoText.text = Time.realtimeSinceStartup.ToString();
-    }
+        damageImage.gameObject.SetActive(true);
+        damageImage.color = Color.clear;
+    }    
 
     public void Pausar()
     {
@@ -89,6 +91,13 @@ public class GameManager : MonoBehaviour
     {
         ColeccText.text = "Coleccionables: " + coleccCogidos.ToString() + "/" + DungeonInit.instance.coleccionables.Count.ToString();
         DifficultyText.text = "Dificultad: " + dificultad.ToString();
+    }
+
+    public void CogerColeccionable()
+    {
+        coleccCogidos++;
+        ActualizarInterfaz();
+        Debug.Log("Coleccionable recogido. Num recogidos: " + coleccCogidos + ", Colecc totales: " + DungeonInit.instance.coleccionables.Count.ToString() + ".", DLogType.Physics);
     }
 
     //Actualizar variables dependientes de la dificultad (enemigos y dungeon)
@@ -131,8 +140,8 @@ public class GameManager : MonoBehaviour
         { //Dividir en sectores la dificultad        
             numRoomsMax = 2 + dificultad * Random.Range(2, 4);
             dungeonSize = 60;
-        }        
-
+        }
+        damageImage.color = Color.clear;
         Debug.Log("Numero de intentos: " + numPartidas + ", Dificultad: " + dificultad + ".", DLogType.difficultyAdjusting);
         Debug.Log("Racha de victorias: " + rachaVictorias + ", racha de derrotas: " + rachaDerrotas + ".", DLogType.difficultyAdjusting);
         Debug.Log("Velocidad enemigos: " + enemiesVelocity + ", Player damage: " + playerDamage + ", Enemies damage: " + enemiesDamage + ".", DLogType.difficultyAdjusting);
@@ -141,6 +150,7 @@ public class GameManager : MonoBehaviour
 
     public void Victoria()
     {
+        tiempoTotalRonda = Time.timeSinceLevelLoad;
         numPartidas++;
 
         rachaVictorias++;
@@ -157,12 +167,14 @@ public class GameManager : MonoBehaviour
                 rachaVictorias = 0;
             }
         }
+        Debug.Log("Tiempo de ronda: " + tiempoTotalRonda, DLogType.System);
         calcularDificultad();
         SceneManager.LoadSceneAsync("Test_Dungeon");
     }
 
     public void Derrota()
     {
+        tiempoTotalRonda = Time.timeSinceLevelLoad;
         numPartidas++;
 
         rachaDerrotas++;
@@ -175,15 +187,9 @@ public class GameManager : MonoBehaviour
                 dificultad--;
             }
         }
+        Debug.Log("Tiempo de ronda: " + tiempoTotalRonda, DLogType.System);
         calcularDificultad();
         SceneManager.LoadSceneAsync("Test_Dungeon");
-    }
-
-    public void CogerColeccionable()
-    {
-        coleccCogidos++;
-        ActualizarInterfaz();
-        Debug.Log("Coleccionable recogido. Num recogidos: " + coleccCogidos + ", Colecc totales: " + DungeonInit.instance.coleccionables.Count.ToString() + ".", DLogType.Physics);
     }
 
     public void BotonSalir()

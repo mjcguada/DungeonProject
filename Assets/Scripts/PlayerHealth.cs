@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour {
     
     public Slider healthSlider;
     [HideInInspector] public int vida = 100;
+    public float flashSpeed = 5f;
 
     bool vulnerable = true;
 
@@ -28,6 +29,11 @@ public class PlayerHealth : MonoBehaviour {
                 StopCoroutine(toggleVulnerable());
                 StartCoroutine(toggleVulnerable());
 
+                //Damage Image
+                GameManager.instance.damageImage.color = Color.red;
+                StopCoroutine(aclararImagen());
+                StartCoroutine(aclararImagen());
+
                 if (vida <= 0)
                 {
                     Debug.Log("Player eliminado", DLogType.Physics);
@@ -39,6 +45,26 @@ public class PlayerHealth : MonoBehaviour {
                 Debug.Log("Player dañado", DLogType.Physics);
             }
         }
+    }
+
+    IEnumerator aclararImagen()
+    {
+        bool termino = false;
+
+        while (!termino)
+        {
+            GameManager.instance.damageImage.color = Color.Lerp(GameManager.instance.damageImage.color, Color.clear, flashSpeed * Time.deltaTime);
+
+            if (GameManager.instance.damageImage.color == Color.clear)
+                termino = true;
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        if (termino)        
+            StopCoroutine(aclararImagen());
+
+        yield return new WaitForFixedUpdate();
     }
 
     IEnumerator toggleVulnerable()

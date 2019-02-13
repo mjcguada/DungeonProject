@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ComportamientoEnemigo : MonoBehaviour {
-
+public class ComportamientoEnemigo : MonoBehaviour
+{
     NavMeshAgent agente;
     //Vector3 startPosition;
     GameObject player;
@@ -17,7 +17,7 @@ public class ComportamientoEnemigo : MonoBehaviour {
     {
         sprite_ = GetComponentInChildren<SpriteRenderer>();
         if (sprite_ == null)
-            Debug.Log("Enemigo no encuentra sprite");
+            Debug.Log("Enemigo no encuentra sprite", DLogType.Error);
 
         colorOriginal = sprite_.color;
 
@@ -25,20 +25,43 @@ public class ComportamientoEnemigo : MonoBehaviour {
         //startPosition = transform.position;
     }
 
-    void Start()
-    {              
+    private void Start()
+    {
         agente = GetComponent<NavMeshAgent>();
         agente.SetDestination(player.transform.position);
 
         agente.speed = GameManager.instance.enemiesVelocity;
         agente.angularSpeed = 40 + GameManager.instance.enemiesVelocity;
-        agente.acceleration = 20 + GameManager.instance.dificultad * 6 +  GameManager.instance.enemiesVelocity / 7;
-    }    
-	
-	// Update is called once per frame
-	void FixedUpdate () {
+        agente.acceleration = 20 + GameManager.instance.dificultad * 6 + GameManager.instance.enemiesVelocity / 7;        
+    }
+
+    // Update is called once per frame
+    void FixedUpdate () {
         transform.position = new Vector3(transform.position.x, 1, transform.position.z); //mantener fija la Y
         agente.SetDestination(player.transform.position);      
+    }
+
+    private void OnEnable()
+    {
+        if (agente != null)
+        {
+            agente.SetDestination(player.transform.position);
+            agente.speed = GameManager.instance.enemiesVelocity;
+        }
+    }
+
+    IEnumerator slowDown()
+    {
+        yield return new WaitForSeconds(GameManager.instance.slowDownTime); // Wait
+        transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z); //mantener fija la Y
+
+        if (agente.enabled)
+        {
+            agente.SetDestination(player.transform.position);
+            agente.speed = GameManager.instance.enemiesVelocity;
+        }       
+
+        yield break; //So that unity doesn't crash
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -49,7 +72,7 @@ public class ComportamientoEnemigo : MonoBehaviour {
             GameManager.instance.disparosAcertados++;
             Destroy(collision.gameObject); //Destruir pelota
 
-            vida -= GameManager.instance.playerDamage; 
+            vida -= GameManager.instance.playerDamage;
 
             if (vida <= 0)
             {
@@ -57,16 +80,22 @@ public class ComportamientoEnemigo : MonoBehaviour {
                 Debug.Log("Enemigo eliminado. Enemigos restantes: " + DungeonInit.instance.enemigos.Count.ToString(), DLogType.Log);
             }
 
+            //Toggle color
             sprite_.color = Color.red;
             StopCoroutine(VolverColorOriginal());
             StartCoroutine(VolverColorOriginal());
+
+            //SlowDown
+            agente.speed = 0;
+            StopCoroutine(slowDown());
+            StartCoroutine(slowDown());
         }
-    }    
+    }
 
     IEnumerator VolverColorOriginal()
     {
         yield return new WaitForSeconds(0.3f);
         sprite_.color = colorOriginal;
-        yield break;        
+        yield break;
     }
 }

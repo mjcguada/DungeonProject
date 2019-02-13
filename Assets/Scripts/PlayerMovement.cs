@@ -20,8 +20,26 @@ public class PlayerMovement : MonoBehaviour {
 
         emitLog();
 
-        if (Input.GetKeyUp(KeyCode.P))
+        if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Escape))
             GameManager.instance.Pausar();
+
+        if (Input.GetKeyUp(KeyCode.F12))
+        {
+            GameManager.instance.calcularDificultad();
+            DungeonInit.instance.GenerateDungeon();
+        }
+
+        if (Input.GetKeyUp(KeyCode.F5))
+        {
+            GameManager.instance.Derrota();
+        }
+
+        if (Input.GetKeyUp(KeyCode.F6))
+        {
+            GameManager.instance.Victoria();
+        }
+
+        GameManager.instance.CronoText.text = Time.realtimeSinceStartup.ToString();
     }
 
     void emitLog()

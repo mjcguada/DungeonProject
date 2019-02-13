@@ -51,17 +51,8 @@ public class DungeonInit : MonoBehaviour {
         GameManager.instance.calcularDificultad();
 
         dgCore = GetComponent<DGCore>();
-        GenerateDungeon();
-    }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        if (Input.GetButtonUp("Jump")){
-            GameManager.instance.calcularDificultad();
-            GenerateDungeon();
-        }		
-	}
+        GenerateDungeon();        
+    }	
 
     public void GenerateDungeon()
     {
