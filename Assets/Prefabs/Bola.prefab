@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 135731903233974272}
   - component: {fileID: 54163563314716560}
   - component: {fileID: 114931391418755278}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bola
   m_TagString: Bola
   m_Icon: {fileID: 0}

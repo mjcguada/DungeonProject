@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour {
         if (Input.GetKeyUp(KeyCode.F12))
         {
             GameManager.instance.calcularDificultad();
-            DungeonInit.instance.GenerateDungeon();
+            GameManager.instance.ReiniciarPartida();            
         }
 
         if (Input.GetKeyUp(KeyCode.F5))

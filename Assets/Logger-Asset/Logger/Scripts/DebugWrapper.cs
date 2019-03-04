@@ -18,6 +18,7 @@ public enum DLogType
     Setup,
     CameraSetup,
     difficultyAdjusting,
+    questionnaire,
     Video,
     Physics
 }

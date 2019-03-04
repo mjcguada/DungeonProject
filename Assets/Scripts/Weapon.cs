@@ -43,7 +43,7 @@ public class Weapon : MonoBehaviour
             bala.transform.position = transform.position;
             bala.GetComponent<Rigidbody>().velocity = (mousePosition - transform.position).normalized * fuerza * 500 * Time.deltaTime;
 
-            Destroy(bala, 5f);
+            Destroy(bala, 3f);
         }
     }
 }

@@ -22,12 +22,12 @@ public class ComportamientoEnemigo : MonoBehaviour
         colorOriginal = sprite_.color;
 
         player = GameObject.Find("Player");
+        agente = GetComponent<NavMeshAgent>();
         //startPosition = transform.position;
     }
 
     private void Start()
-    {
-        agente = GetComponent<NavMeshAgent>();
+    {        
         agente.SetDestination(player.transform.position);
 
         agente.speed = GameManager.instance.enemiesVelocity;
@@ -75,11 +75,14 @@ public class ComportamientoEnemigo : MonoBehaviour
             vida -= GameManager.instance.playerDamage;
 
             if (vida <= 0)
-            {
+            {                
                 Destroy(gameObject);
+                GameManager.instance.SubirVolumen();
+                GameManager.instance.PlayEffect();
+                GameManager.instance.enemiesDefeated++;
                 Debug.Log("Enemigo eliminado. Enemigos restantes: " + DungeonInit.instance.enemigos.Count.ToString(), DLogType.Log);
             }
-
+            
             //Toggle color
             sprite_.color = Color.red;
             StopCoroutine(VolverColorOriginal());

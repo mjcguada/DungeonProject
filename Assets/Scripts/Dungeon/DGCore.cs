@@ -115,7 +115,7 @@ public class DGCore : MonoBehaviour
                     DungeonInit.instance.Player_.transform.position = new Vector3(posX, 0, posY);
                 }
                 //Colocacion enemigos
-                if (contRoom >= 2)
+                if (contRoom >= 3)
                 {
                     for (int i = 0; i < GameManager.instance.numEnemiesRoom && DungeonInit.instance.enemigos.Count < GameManager.instance.numEnemiesMax; i++)
                     {
@@ -140,7 +140,7 @@ public class DGCore : MonoBehaviour
                     aux.gameObject.transform.position = posAle;
                 }
 
-                if (contRoom > 3)
+                if (contRoom > 3 && DungeonInit.instance.coleccionables.Count < GameManager.instance.coleccMax)
                 {
                     int r = Random.Range(1, 3); //cuatro posibles resultados (esquinas)
 

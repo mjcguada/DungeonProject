@@ -33,9 +33,11 @@ public class GameManager : MonoBehaviour
     //Parametros performance del jugador:
     [HideInInspector] public int disparosRealizados = 0;
     [HideInInspector] public int disparosAcertados = 0;
- 
+    [HideInInspector] public int enemiesDefeated = 0;
+
     [HideInInspector] public float tiempoTotalRonda = 0;
 
+    [Range(0.1f, 1.5f)]
     public float slowDownTime = 1.2f;
 
     public Text ColeccText;
@@ -45,7 +47,19 @@ public class GameManager : MonoBehaviour
     public GameObject panel_;
     public Image damageImage;
 
+    public Texture2D cursorTexture;
+
     [HideInInspector] public bool pausado = false;
+    //[HideInInspector] public AudioSource mainTheme;
+    AudioManager audioManager_;
+
+    /////////////// Questionario    
+    bool respuesta1 = false;
+    [HideInInspector] public int respuesta2 = 0;
+    [Header("Cuestionario")]
+    public GameObject[] cuestionarioElems;    
+    public GameObject nextButton;
+    public GameObject nextText;
 
     public static GameManager instance;
 
@@ -53,28 +67,37 @@ public class GameManager : MonoBehaviour
     {
         if (instance != null && instance != this)
         {
-            Destroy(this.gameObject);            
-            Destroy(canvas_);            
+            Destroy(this.gameObject);
+            Destroy(canvas_);
             return;
         }
         else
         {
             // just move it to the root
             this.transform.parent = null;
-            instance = this;            
+            instance = this;
         }
-        DontDestroyOnLoad(this.gameObject);        
+        DontDestroyOnLoad(this.gameObject);
         DontDestroyOnLoad(canvas_);
         //calcularDificultad(); //Ahora en dungeon init
     }
 
     // Use this for initialization
     void Start()
-    {        
+    {
+        //Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+        audioManager_ = GetComponent<AudioManager>();
+        audioManager_.PlaySound("theme");
+        audioManager_.setVolume("theme", 0.6f);
+        //mainTheme = GetComponent<AudioSource>();
+        //mainTheme.volume = 0.6f;
+        MostrarCuestionario(false);
         ActualizarInterfaz();
         damageImage.gameObject.SetActive(true);
         damageImage.color = Color.clear;
-    }    
+
+        StartCoroutine(bajarVolumen());
+    }
 
     public void Pausar()
     {
@@ -89,8 +112,8 @@ public class GameManager : MonoBehaviour
 
     public void ActualizarInterfaz()
     {
-        ColeccText.text = "Coleccionables: " + coleccCogidos.ToString() + "/" + DungeonInit.instance.coleccionables.Count.ToString();
-        DifficultyText.text = "Dificultad: " + dificultad.ToString();
+        ColeccText.text = coleccCogidos.ToString() + "/" + DungeonInit.instance.coleccionables.Count.ToString(); //"Coleccionables: " + coleccCogidos.ToString() + "/" + DungeonInit.instance.coleccionables.Count.ToString();
+        DifficultyText.text = "Difficulty: " + dificultad.ToString();
     }
 
     public void CogerColeccionable()
@@ -111,12 +134,13 @@ public class GameManager : MonoBehaviour
          * 
          * 
          */
-
-
-
-
+        
+        
         //Reiniciamos progreso del nivel
         coleccCogidos = 0;
+        disparosAcertados = 0;
+        disparosRealizados = 0;
+        enemiesDefeated = 0;
 
         //Stats
         playerDamage = 50 - dificultad * 2f;
@@ -168,8 +192,11 @@ public class GameManager : MonoBehaviour
             }
         }
         Debug.Log("Tiempo de ronda: " + tiempoTotalRonda, DLogType.System);
+        Debug.Log("Disparos realizados: " + disparosRealizados + ", Disparos acertados: " + disparosAcertados + ".", DLogType.difficultyAdjusting);
         calcularDificultad();
-        SceneManager.LoadSceneAsync("Test_Dungeon");
+        //SceneManager.LoadSceneAsync("Test_Dungeon");
+        Time.timeScale = 0;
+        MostrarCuestionario(true);
     }
 
     public void Derrota()
@@ -188,6 +215,15 @@ public class GameManager : MonoBehaviour
             }
         }
         Debug.Log("Tiempo de ronda: " + tiempoTotalRonda, DLogType.System);
+        Debug.Log("Disparos realizados: " + disparosRealizados + ", Disparos acertados: " + disparosAcertados + ".", DLogType.difficultyAdjusting);
+        calcularDificultad();
+        //SceneManager.LoadSceneAsync("Test_Dungeon");
+        Time.timeScale = 0;
+        MostrarCuestionario(true);
+    }
+
+    public void ReiniciarPartida() //Exclusivamente debug
+    {
         calcularDificultad();
         SceneManager.LoadSceneAsync("Test_Dungeon");
     }
@@ -195,5 +231,53 @@ public class GameManager : MonoBehaviour
     public void BotonSalir()
     {
         Application.Quit();
+    }
+
+    public void MostrarCuestionario(bool resp)
+    {
+        foreach (GameObject go in cuestionarioElems) {
+            go.SetActive(resp);
+        }
+
+        if (!resp) { //El boton de siguiente nivel aparece despues de elegir opcion, aqui solo se le puede desactivar
+            nextButton.SetActive(resp);
+            nextText.SetActive(resp);
+        }
+    }
+
+    public void question1(bool resp)
+    {        
+        respuesta1 = resp;        
+        nextButton.SetActive(true);
+        nextText.SetActive(true);
+    }
+        
+    public void Next()
+    {
+        Debug.Log("Nivel divertido = " + respuesta1, DLogType.questionnaire);
+        Debug.Log("Nivel dificil = " + respuesta2, DLogType.questionnaire);        
+        MostrarCuestionario(false);
+        Time.timeScale = 1; //reiniciamos el tiempo
+        SceneManager.LoadSceneAsync("Test_Dungeon");        
+    }
+
+    public void SubirVolumen()
+    {
+        float volume = audioManager_.getVolume("theme");
+        audioManager_.setVolume("theme", volume + 0.2f);
+    }
+
+    public void PlayEffect()
+    {
+        audioManager_.PlaySound("effect");
+    }
+
+    IEnumerator bajarVolumen()
+    {
+        yield return new WaitForSeconds(0.5f);
+        float volume = audioManager_.getVolume("theme");
+        audioManager_.setVolume("theme", volume-0.05f);     
+        
+        yield return bajarVolumen();
     }
 }
