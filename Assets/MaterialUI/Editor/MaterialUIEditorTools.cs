@@ -462,7 +462,7 @@ namespace MaterialUI
 			theThing.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 		}
 
-		[MenuItem("Component/MaterialUI/Ripple Config")]
+		/*[MenuItem("Component/MaterialUI/Ripple Config")]
 		[MenuItem("MaterialUI/Add Component/Ripple Config")]
 		private static void AddRippleConfig()
 		{
@@ -550,7 +550,7 @@ namespace MaterialUI
 					selectedObject.AddComponent<EZAnim>();
 				}
 			}
-		}
+		}*/
 
 		[MenuItem("MaterialUI/Report a Bug - Request a Feature")]
 		private static void Feedback()

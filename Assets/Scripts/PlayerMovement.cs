@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour {
 
     public CharacterController controller_;
     public float runSpeed = 25f;
+    public bool logMovimiento = true;
     
     float horizontalMove = 0f;
     float verticalMove = 0f;
@@ -18,7 +19,8 @@ public class PlayerMovement : MonoBehaviour {
         transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z); //Mantener fija la Y
         controller_.Move(new Vector3(horizontalMove * Time.fixedDeltaTime, 0, verticalMove * Time.fixedDeltaTime));
 
-        emitLog();
+        if(logMovimiento)
+            emitLog();
 
         if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Escape))
             GameManager.instance.Pausar();

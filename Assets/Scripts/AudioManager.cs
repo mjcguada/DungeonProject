@@ -18,8 +18,11 @@ public class AudioManager : MonoBehaviour {
 
     public void PlaySound(string name)
     {
-        Sound s = Array.Find(sounds, sound => sound.name == name);
-        s.AudioSource_.Play();
+        if (GameManager.instance.sonidoActivo)
+        {
+            Sound s = Array.Find(sounds, sound => sound.name == name);
+            s.AudioSource_.Play();
+        }        
     }
 
     public void setVolume(string name, float volume)

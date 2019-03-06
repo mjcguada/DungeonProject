@@ -3,63 +3,75 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Networking;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
-    [Range(1, 10)]
-    public int dificultad = 5;
+    //Enemies
     [HideInInspector] public int enemiesDamage;
-    [HideInInspector] public float playerDamage;
-
     [HideInInspector] public float enemiesVelocity;
-
     [HideInInspector] public int enemiesFirerate;
+
+    //Player
+    [HideInInspector] public float playerDamage;
     [HideInInspector] public int playerFirerate;
 
+    //Dungeon
     [HideInInspector] public int dungeonSize;
     [HideInInspector] public int numRoomsMax;
     [HideInInspector] public int numEnemiesMax;
     [HideInInspector] public int numEnemiesRoom;
 
+    //Game
     [HideInInspector] public int numPartidas = 0;
     [HideInInspector] public int rachaDerrotas = 0;
     [HideInInspector] public int rachaVictorias = 0;
-
-    [HideInInspector] public int coleccCogidos = 0;
     [HideInInspector] public int coleccMax = 0;
 
-    [HideInInspector] public int cameraSize_ = 25;
+    //Setup
+    [HideInInspector] public int cameraSize_ = 35;
 
     //Parametros performance del jugador:
     [HideInInspector] public int disparosRealizados = 0;
     [HideInInspector] public int disparosAcertados = 0;
     [HideInInspector] public int enemiesDefeated = 0;
+    [HideInInspector] public int coleccCogidos = 0;
 
     [HideInInspector] public float tiempoTotalRonda = 0;
 
+    [Range(1, 10)]
+    public int dificultad = 5;
+
     [Range(0.1f, 1.5f)]
     public float slowDownTime = 1.2f;
+    public bool sonidoActivo = true;
+    public bool primerFormulario = false;
 
     public Text ColeccText;
     public Text CronoText;
     public Text DifficultyText;
-    public Canvas canvas_;
+    public GameObject canvas_;
     public GameObject panel_;
     public Image damageImage;
 
-    public Texture2D cursorTexture;
-
     [HideInInspector] public bool pausado = false;
-    //[HideInInspector] public AudioSource mainTheme;
     AudioManager audioManager_;
+
+    public GameObject unityFileDebug;
 
     /////////////// Questionario    
     bool respuesta1 = false;
     [HideInInspector] public int respuesta2 = 0;
+    [HideInInspector] public string nombreUsuario = "MyName";
     [Header("Cuestionario")]
-    public GameObject[] cuestionarioElems;    
+    public GameObject[] cuestionarioElems;
     public GameObject nextButton;
     public GameObject nextText;
+
+    //Primer formulario
+    public GameObject firstPanel;
+    public GameObject acceptButton;
 
     public static GameManager instance;
 
@@ -79,24 +91,27 @@ public class GameManager : MonoBehaviour
         }
         DontDestroyOnLoad(this.gameObject);
         DontDestroyOnLoad(canvas_);
-        //calcularDificultad(); //Ahora en dungeon init
     }
 
     // Use this for initialization
     void Start()
     {
-        //Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+        if (primerFormulario)
+        {
+            Time.timeScale = 0;
+            firstPanel.SetActive(true);
+        }
+        //Audio
         audioManager_ = GetComponent<AudioManager>();
         audioManager_.PlaySound("theme");
         audioManager_.setVolume("theme", 0.6f);
-        //mainTheme = GetComponent<AudioSource>();
-        //mainTheme.volume = 0.6f;
+        StartCoroutine(bajarVolumen());
+
+        //Interfaz
         MostrarCuestionario(false);
         ActualizarInterfaz();
         damageImage.gameObject.SetActive(true);
         damageImage.color = Color.clear;
-
-        StartCoroutine(bajarVolumen());
     }
 
     public void Pausar()
@@ -134,8 +149,8 @@ public class GameManager : MonoBehaviour
          * 
          * 
          */
-        
-        
+        //POST();
+
         //Reiniciamos progreso del nivel
         coleccCogidos = 0;
         disparosAcertados = 0;
@@ -235,30 +250,32 @@ public class GameManager : MonoBehaviour
 
     public void MostrarCuestionario(bool resp)
     {
-        foreach (GameObject go in cuestionarioElems) {
+        foreach (GameObject go in cuestionarioElems)
+        {
             go.SetActive(resp);
         }
 
-        if (!resp) { //El boton de siguiente nivel aparece despues de elegir opcion, aqui solo se le puede desactivar
+        if (!resp)
+        { //El boton de siguiente nivel aparece despues de elegir opcion, aqui solo se le puede desactivar
             nextButton.SetActive(resp);
             nextText.SetActive(resp);
         }
     }
 
     public void question1(bool resp)
-    {        
-        respuesta1 = resp;        
+    {
+        respuesta1 = resp;
         nextButton.SetActive(true);
         nextText.SetActive(true);
     }
-        
+
     public void Next()
     {
-        Debug.Log("Nivel divertido = " + respuesta1, DLogType.questionnaire);
-        Debug.Log("Nivel dificil = " + respuesta2, DLogType.questionnaire);        
+        Debug.Log("Nivel divertido = " + respuesta1, DLogType.quiz);
+        Debug.Log("Nivel dificil = " + respuesta2, DLogType.quiz);
         MostrarCuestionario(false);
         Time.timeScale = 1; //reiniciamos el tiempo
-        SceneManager.LoadSceneAsync("Test_Dungeon");        
+        SceneManager.LoadSceneAsync("Test_Dungeon");
     }
 
     public void SubirVolumen()
@@ -276,8 +293,79 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         float volume = audioManager_.getVolume("theme");
-        audioManager_.setVolume("theme", volume-0.05f);     
-        
+        audioManager_.setVolume("theme", volume - 0.05f);
+
         yield return bajarVolumen();
     }
+
+    public void AceptarPrimerFormulario()
+    {
+        firstPanel.SetActive(false);
+        acceptButton.SetActive(false);
+        Time.timeScale = 1;
+        unityFileDebug.SetActive(true);
+    }
+    
+    public void POST()
+    {
+        StartCoroutine(Upload());        
+    }    
+
+    IEnumerator Upload()
+    {
+        // Create a Web Form
+        WWWForm form = new WWWForm();    
+        form.AddField("Usuario", GameManager.instance.nombreUsuario);        
+
+        //byte[] bytes = File.ReadAllBytes(unityFileDebug.GetComponent<SSS.UnityFileDebug.UnityFileDebug>().filePathFull);
+        //string name = Path.GetFileName(unityFileDebug.GetComponent<SSS.UnityFileDebug.UnityFileDebug>().filePathFull);
+
+        string data = File.ReadAllText(unityFileDebug.GetComponent<SSS.UnityFileDebug.UnityFileDebug>().filePathFull); //Convirtiendo el contenido del json a string
+        form.AddField("jsonFile", data);
+
+        //form.AddBinaryData("jsonFile", bytes, name, "application/json");    //Antigua version, subiendo el fichero json  
+        
+        UnityWebRequest www = UnityWebRequest.Post("http://localhost:3000/posts", form);
+        yield return www.SendWebRequest();
+
+        if (www.isNetworkError || www.isHttpError)
+        {
+            Debug.Log(www.error);     
+            Debug.Log(www.responseCode); 
+        }
+        else
+        {
+            Debug.Log("Form upload complete!");
+        }
+    }
+
+
+    /* //VIEJAS VERSIONES DE POST
+     * public void POST()
+    {        
+        string jsonStr = unityFileDebug.GetComponent<SSS.UnityFileDebug.UnityFileDebug>().filePathFull;
+        WWW www;
+        Hashtable postHeader = new Hashtable();
+        postHeader.Add("Content-Type", "application/json");
+
+        // convert json string to byte
+        var formData = System.Text.Encoding.UTF8.GetBytes(jsonStr);
+
+        www = new WWW(URL, formData, postHeader);
+        StartCoroutine(WaitForRequest(www));
+        return www;
+    }
+
+    IEnumerator WaitForRequest(WWW data)
+    {
+        yield return data; // Wait until the download is done
+        if (data.error != null)
+        {
+            Debug.Log("There was an error sending request: " + data.error);
+        }
+        else
+        {
+            Debug.Log("WWW Request: " + data.text);
+        }        
+    }*/
 }

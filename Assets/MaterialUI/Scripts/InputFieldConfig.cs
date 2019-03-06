@@ -121,7 +121,13 @@ namespace MaterialUI
 		
 		void Update ()
 		{
-			animDeltaTime = Time.realtimeSinceStartup - animStartTime;
+            GameManager.instance.nombreUsuario = inputField.text;
+            if (inputField.text.Length >= 4)
+                GameManager.instance.acceptButton.SetActive(true);
+            else
+                GameManager.instance.acceptButton.SetActive(false);
+
+            animDeltaTime = Time.realtimeSinceStartup - animStartTime;
 			
 			if (state == 1)    // Activating
 			{

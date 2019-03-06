@@ -36,7 +36,7 @@ public class CameraFollow : MonoBehaviour {
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
         {
-            if (GameManager.instance.cameraSize_ < 35) //Tamaño maximo permitido
+            if (GameManager.instance.cameraSize_ < 36) //Tamaño maximo permitido
             {
                 GameManager.instance.cameraSize_++;
                 camera_.orthographicSize = GameManager.instance.cameraSize_;

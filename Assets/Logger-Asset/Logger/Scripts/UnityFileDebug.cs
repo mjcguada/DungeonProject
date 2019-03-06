@@ -26,7 +26,7 @@ namespace SSS
         public class UnityFileDebug : MonoBehaviour
         {
             public bool useAbsolutePath = false;
-            public string fileName = "MyGame";
+            [HideInInspector] public string fileName = "MyGame";
             public FileType fileType = FileType.CSV;
 
             public string absolutePath = "c:\\";
@@ -49,7 +49,7 @@ namespace SSS
                 }
             }
 
-            void OnEnable()
+            void Start()
             {
                 UpdateFilePath();
                 if (Application.isPlaying)
@@ -75,8 +75,8 @@ namespace SSS
 
             public void UpdateFilePath()
             {
-                filePath = Application.persistentDataPath + @"\"; //Application.dataPath + "/Logs"; //useAbsolutePath ? absolutePath : Application.persistentDataPath;
-                filePathFull = System.IO.Path.Combine(filePath, fileName + "." + System.DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss") + FileExtensionFromType(fileType));
+                filePath = Application.persistentDataPath + @"\"; //Application.dataPath + "/Logs"; //useAbsolutePath ? absolutePath : Application.persistentDataPath;                
+                filePathFull = System.IO.Path.Combine(filePath, GameManager.instance.nombreUsuario + "-" + System.DateTime.Now.ToString("yyyy.MM.dd.HH.mm.ss") + FileExtensionFromType(fileType));
             }
 
             void OnDisable()
@@ -96,6 +96,7 @@ namespace SSS
                             break;
                     }
                     fileWriter.Close();
+                    GameManager.instance.POST(); ////////////////////////////////////////////////REST CLIENT
                 }
             }
 
