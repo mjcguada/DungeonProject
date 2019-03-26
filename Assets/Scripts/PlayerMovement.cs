@@ -19,15 +19,17 @@ public class PlayerMovement : MonoBehaviour {
         transform.position = new Vector3(transform.position.x, 1.5f, transform.position.z); //Mantener fija la Y
         controller_.Move(new Vector3(horizontalMove * Time.fixedDeltaTime, 0, verticalMove * Time.fixedDeltaTime));
 
-        if(logMovimiento)
+        if (horizontalMove != 0 || verticalMove != 0)
+            GameManager.instance.movimientoEnemigos = true;
+
+        if (logMovimiento)
             emitLog();
 
         if (Input.GetKeyUp(KeyCode.P) || Input.GetKeyUp(KeyCode.Escape))
             GameManager.instance.Pausar();
 
         if (Input.GetKeyUp(KeyCode.F12))
-        {
-            GameManager.instance.calcularDificultad();
+        {            
             GameManager.instance.ReiniciarPartida();            
         }
 

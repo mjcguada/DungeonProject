@@ -36,6 +36,7 @@ public class Weapon : MonoBehaviour
         {
             Debug.Log("El jugador ha disparado una bala", DLogType.Input);
             GameManager.instance.disparosRealizados++; //Performance
+            GameManager.instance.movimientoEnemigos = true;
 
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -43,7 +44,7 @@ public class Weapon : MonoBehaviour
             bala.transform.position = transform.position;
             bala.GetComponent<Rigidbody>().velocity = (mousePosition - transform.position).normalized * fuerza * 500 * Time.deltaTime;
 
-            Destroy(bala, 3f);
+            Destroy(bala, 3f);            
         }
     }
 }

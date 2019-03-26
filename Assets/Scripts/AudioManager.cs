@@ -25,6 +25,15 @@ public class AudioManager : MonoBehaviour {
         }        
     }
 
+    public void StopSound(string name)
+    {
+        if (!GameManager.instance.sonidoActivo)
+        {
+            Sound s = Array.Find(sounds, sound => sound.name == name);
+            s.AudioSource_.Stop();
+        }
+    }
+
     public void setVolume(string name, float volume)
     {
         if (volume <= 1 && volume >= 0)

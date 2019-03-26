@@ -27,9 +27,7 @@ public class ComportamientoEnemigo : MonoBehaviour
     }
 
     private void Start()
-    {        
-        agente.SetDestination(player.transform.position);
-
+    {
         agente.speed = GameManager.instance.enemiesVelocity;
         agente.angularSpeed = 40 + GameManager.instance.enemiesVelocity;
         agente.acceleration = 20 + GameManager.instance.dificultad * 6 + GameManager.instance.enemiesVelocity / 7;        
@@ -37,18 +35,10 @@ public class ComportamientoEnemigo : MonoBehaviour
 
     // Update is called once per frame
     void FixedUpdate () {
-        transform.position = new Vector3(transform.position.x, 1, transform.position.z); //mantener fija la Y
-        agente.SetDestination(player.transform.position);      
-    }
-
-    private void OnEnable()
-    {
-        if (agente != null)
-        {
+        if(GameManager.instance.movimientoEnemigos)
             agente.SetDestination(player.transform.position);
-            agente.speed = GameManager.instance.enemiesVelocity;
-        }
-    }
+        transform.position = new Vector3(transform.position.x, 1, transform.position.z); //mantener fija la Y        
+    }    
 
     IEnumerator slowDown()
     {
@@ -61,14 +51,14 @@ public class ComportamientoEnemigo : MonoBehaviour
             agente.speed = GameManager.instance.enemiesVelocity;
         }       
 
-        yield break; //So that unity doesn't crash
+        yield break; 
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.GetComponent<Bola>())
         {
-            Debug.Log("Colision de bola con enemigo", DLogType.Physics);
+            Debug.Log("Enemigo golpeado", DLogType.Physics);
             GameManager.instance.disparosAcertados++;
             Destroy(collision.gameObject); //Destruir pelota
 
@@ -80,7 +70,7 @@ public class ComportamientoEnemigo : MonoBehaviour
                 GameManager.instance.SubirVolumen();
                 GameManager.instance.PlayEffect();
                 GameManager.instance.enemiesDefeated++;
-                Debug.Log("Enemigo eliminado. Enemigos restantes: " + DungeonInit.instance.enemigos.Count.ToString(), DLogType.Log);
+                Debug.Log("Enemigo eliminado. Enemigos restantes: " + DungeonInit.instance.enemigos.Count.ToString(), DLogType.Enemies);
             }
             
             //Toggle color

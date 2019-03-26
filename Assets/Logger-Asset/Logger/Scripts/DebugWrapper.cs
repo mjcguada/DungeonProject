@@ -18,7 +18,9 @@ public enum DLogType
     Setup,
     CameraSetup,
     difficultyAdjusting,
-    quiz,
+    Quiz,
+    Form,
+    Enemies,
     Video,
     Physics
 }

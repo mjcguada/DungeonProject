@@ -35,7 +35,7 @@ namespace SSS
             public string filePathFull;
             public int count = 0;
 
-            System.IO.StreamWriter fileWriter;
+            //System.IO.StreamWriter fileWriter;
 
             string FileExtensionFromType(FileType type)
             {
@@ -51,27 +51,28 @@ namespace SSS
 
             void Start()
             {
+                GameManager.instance.InicializarFormulario();
                 UpdateFilePath();
                 if (Application.isPlaying)
                 {
                     count = 0;
-                    fileWriter = new System.IO.StreamWriter(filePathFull, false);
-                    fileWriter.AutoFlush = true;
+                    //fileWriter = new System.IO.StreamWriter(filePathFull, false);
+                    //fileWriter.AutoFlush = true;
                     switch (fileType)
                     {
                         case FileType.CSV:
-                            fileWriter.WriteLine("type,time,log,stack");
+                            //fileWriter.WriteLine("type,time,log,stack");
                             break;
                         case FileType.JSON:
-                            fileWriter.WriteLine("[");
+                            //fileWriter.WriteLine("[");
                             break;
                         case FileType.TSV:
-                            fileWriter.WriteLine("type\ttime\tlog\tstack");
+                            //fileWriter.WriteLine("type\ttime\tlog\tstack");
                             break;
                     }
                     Application.logMessageReceived += HandleLog;
                 }
-            }
+            }            
 
             public void UpdateFilePath()
             {
@@ -88,15 +89,15 @@ namespace SSS
                     switch (fileType)
                     {
                         case FileType.JSON:
-                            fileWriter.WriteLine("\n]");
+                            //fileWriter.WriteLine("\n]");
                             break;
                         case FileType.CSV:
                         case FileType.TSV:
                         default:
                             break;
                     }
-                    fileWriter.Close();
-                    GameManager.instance.POST(); ////////////////////////////////////////////////REST CLIENT
+                    //fileWriter.Close();
+                    //GameManager.instance.POST(); ////////////////////////////////////////////////REST CLIENT
                 }
             }
 
@@ -126,21 +127,24 @@ namespace SSS
                 switch (fileType)
                 {
                     case FileType.CSV:
-                        fileWriter.WriteLine(output.type + "," + output.time + "," + output.log.Replace(",", " ").Replace("\n", "") + "," + output.stack.Replace(",", " ").Replace("\n", ""));
+                        //fileWriter.WriteLine(output.type + "," + output.time + "," + output.log.Replace(",", " ").Replace("\n", "") + "," + output.stack.Replace(",", " ").Replace("\n", ""));
                         break;
                     case FileType.JSON:
-                        fileWriter.Write((count == 0 ? "" : ",\n") + JsonUtility.ToJson(output));
+                        //fileWriter.Write((count == 0 ? "" : ",\n") + JsonUtility.ToJson(output));
                         break;
                     case FileType.TSV:
-                        fileWriter.WriteLine(output.type + "\t" + output.time + "\t" + output.log.Replace("\t", " ").Replace("\n", "") + "\t" + output.stack.Replace("\t", " ").Replace("\n", ""));
+                        //fileWriter.WriteLine(output.type + "\t" + output.time + "\t" + output.log.Replace("\t", " ").Replace("\n", "") + "\t" + output.stack.Replace("\t", " ").Replace("\n", ""));
                         break;
                     case FileType.TXT:
-                        fileWriter.WriteLine("Type: " + output.type);
-                        fileWriter.WriteLine("Time: " + output.time);
-                        fileWriter.WriteLine("Log: " + output.log);
-                        fileWriter.WriteLine("Stack: " + output.stack);
+                        //fileWriter.WriteLine("Type: " + output.type);
+                        //fileWriter.WriteLine("Time: " + output.time);
+                        //fileWriter.WriteLine("Log: " + output.log);
+                        //fileWriter.WriteLine("Stack: " + output.stack);
                         break;
                 }
+
+                //Debug.Log("Cosa:" + logString);
+                GameManager.instance.WriteForm(output.type, output.log, output.time);
 
                 count++;
             }

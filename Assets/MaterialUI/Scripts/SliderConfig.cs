@@ -45,8 +45,9 @@ namespace MaterialUI
 
 			popup.gameObject.GetComponent<Image> ().color = handle.gameObject.GetComponent<Image> ().color;
 
-			UpdateText ();
-		}
+			UpdateText1 ();
+            UpdateText2 ();
+        }
 
 		void Update ()
 		{
@@ -112,17 +113,27 @@ namespace MaterialUI
 			}
 		}
 
-		public void UpdateText ()
+		public void UpdateText1 ()
 		{
 			if (textHasDecimal)
 				popupText.text = slider.value.ToString("0.0");
             else 
 				popupText.text = slider.value.ToString("0");
 
-            GameManager.instance.respuesta2 = (int)slider.value;
+            GameManager.instance.respuesta1 = (int)slider.value;
 		}
 
-		public void OnPointerDown (PointerEventData data)
+        public void UpdateText2()
+        {
+            if (textHasDecimal)
+                popupText.text = slider.value.ToString("0.0");
+            else
+                popupText.text = slider.value.ToString("0");
+
+            GameManager.instance.respuesta2 = (int)slider.value;
+        }
+
+        public void OnPointerDown (PointerEventData data)
 		{
 			currentHandleScale = handle.localScale.x;
 			currentPopupScale = popup.localScale.x;
