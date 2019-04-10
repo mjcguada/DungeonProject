@@ -36,13 +36,13 @@ public class PlayerHealth : MonoBehaviour {
 
                 if (vida <= 0)
                 {
-                    Debug.Log("Player eliminado", DLogType.Physics);
+                    GameManager.instance.WriteForm("Player eliminado", DLogType.Physics);
                     gameObject.SetActive(false);
                     healthSlider.value = 0;
                     GameManager.instance.Derrota();
                 }
 
-                Debug.Log("Player dañado", DLogType.Physics);
+                GameManager.instance.WriteForm("Player dañado", DLogType.Physics);
             }
         }
     }

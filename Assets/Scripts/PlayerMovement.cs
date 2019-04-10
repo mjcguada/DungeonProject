@@ -49,16 +49,16 @@ public class PlayerMovement : MonoBehaviour {
     void emitLog()
     {
         if (verticalMove > 5)        
-            Debug.Log("El jugador se desplaza hacia arriba", DLogType.Input);
+            GameManager.instance.WriteForm("El jugador se desplaza hacia arriba", DLogType.Input);
         
         if (verticalMove < -5)
-            Debug.Log("El jugador se desplaza hacia abajo", DLogType.Input);
+            GameManager.instance.WriteForm("El jugador se desplaza hacia abajo", DLogType.Input);
 
         if (horizontalMove > 5)
-            Debug.Log("El jugador se desplaza hacia la derecha", DLogType.Input);
+            GameManager.instance.WriteForm("El jugador se desplaza hacia la derecha", DLogType.Input);
 
         if (horizontalMove < -5)
-            Debug.Log("El jugador se desplaza hacia la izquierda", DLogType.Input);
+            GameManager.instance.WriteForm("El jugador se desplaza hacia la izquierda", DLogType.Input);
     }
        
 }

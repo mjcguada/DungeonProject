@@ -17,7 +17,7 @@ public enum DLogType
     Network,
     Setup,
     CameraSetup,
-    difficultyAdjusting,
+    datos,
     Quiz,
     Form,
     Enemies,

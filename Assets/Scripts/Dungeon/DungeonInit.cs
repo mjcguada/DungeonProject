@@ -66,7 +66,12 @@ public class DungeonInit : MonoBehaviour {
         oneStepSize = (float)System.Convert.ToDouble(oneStepSizeStr);
         dgCore.EmitGeometry(lineLGO, lineRGO, lineTGO, lineBGO, ICornerTLGO, ICornerTRGO, ICornerBLGO, ICornerBRGO, OCornerTLGO, OCornerTRGO, OCornerBLGO, OCornerBRGO, FloorPlate, oneStepSize, isSetIds);
 
-        Debug.Log("Dungeon generada: " + dgCore.GetRoomsCount() + " habitaciones, " + dgCore.GetCoridorsCount() + " pasillos. Número de enemigos: " + enemigos.Count + ".", DLogType.Setup);
+
+        //-------------------DATOS INICIALES---------------------
+        GameManager.instance.WriteForm("Habitaciones " + dgCore.GetRoomsCount(), DLogType.datos);
+        GameManager.instance.WriteForm("Número de enemigos: " + enemigos.Count, DLogType.datos);
+        GameManager.instance.WriteForm("Coleccionables totales: " + coleccionables.Count, DLogType.datos);
+
         GameManager.instance.ActualizarInterfaz();
     }
 }

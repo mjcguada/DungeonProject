@@ -34,7 +34,7 @@ public class Weapon : MonoBehaviour
     {
         if (!GameManager.instance.pausado)
         {
-            Debug.Log("El jugador ha disparado una bala", DLogType.Input);
+            GameManager.instance.WriteForm("El jugador ha disparado una bala", DLogType.Input);
             GameManager.instance.disparosRealizados++; //Performance
             GameManager.instance.movimientoEnemigos = true;
 

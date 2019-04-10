@@ -144,7 +144,7 @@ namespace SSS
                 }
 
                 //Debug.Log("Cosa:" + logString);
-                GameManager.instance.WriteForm(output.type, output.log, output.time);
+                //GameManager.instance.WriteForm(output.type, output.log, output.time);
 
                 count++;
             }

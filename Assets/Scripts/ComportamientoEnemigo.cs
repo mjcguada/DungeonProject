@@ -9,7 +9,7 @@ public class ComportamientoEnemigo : MonoBehaviour
     //Vector3 startPosition;
     GameObject player;
 
-    private float vida = 100;
+    private float vida;
     SpriteRenderer sprite_;
     Color colorOriginal;
 
@@ -17,17 +17,18 @@ public class ComportamientoEnemigo : MonoBehaviour
     {
         sprite_ = GetComponentInChildren<SpriteRenderer>();
         if (sprite_ == null)
-            Debug.Log("Enemigo no encuentra sprite", DLogType.Error);
+            GameManager.instance.WriteForm("Enemigo no encuentra sprite", DLogType.Error);
 
         colorOriginal = sprite_.color;
 
         player = GameObject.Find("Player");
+        vida = GameManager.instance.enemiesHealth;
         agente = GetComponent<NavMeshAgent>();
         //startPosition = transform.position;
     }
 
     private void Start()
-    {
+    {        
         agente.speed = GameManager.instance.enemiesVelocity;
         agente.angularSpeed = 40 + GameManager.instance.enemiesVelocity;
         agente.acceleration = 20 + GameManager.instance.dificultad * 6 + GameManager.instance.enemiesVelocity / 7;        
@@ -58,7 +59,7 @@ public class ComportamientoEnemigo : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Bola>())
         {
-            Debug.Log("Enemigo golpeado", DLogType.Physics);
+            GameManager.instance.WriteForm("Enemigo golpeado", DLogType.Physics);
             GameManager.instance.disparosAcertados++;
             Destroy(collision.gameObject); //Destruir pelota
 
@@ -70,7 +71,7 @@ public class ComportamientoEnemigo : MonoBehaviour
                 GameManager.instance.SubirVolumen();
                 GameManager.instance.PlayEffect();
                 GameManager.instance.enemiesDefeated++;
-                Debug.Log("Enemigo eliminado. Enemigos restantes: " + DungeonInit.instance.enemigos.Count.ToString(), DLogType.Enemies);
+                GameManager.instance.WriteForm("Enemigo eliminado. Enemigos restantes: " + DungeonInit.instance.enemigos.Count.ToString(), DLogType.Enemies);
             }
             
             //Toggle color

@@ -15,7 +15,7 @@ public class CameraFollow : MonoBehaviour {
     {
         camera_ = GetComponent<Camera>();
         camera_.orthographicSize = GameManager.instance.cameraSize_;
-        Debug.Log("Establecida camera size " + GameManager.instance.cameraSize_, DLogType.CameraSetup);
+        //Debug.Log("Establecida camera size " + GameManager.instance.cameraSize_, DLogType.CameraSetup);
     }
 
     private void FixedUpdate()
@@ -31,7 +31,7 @@ public class CameraFollow : MonoBehaviour {
             {
                 GameManager.instance.cameraSize_--;
                 camera_.orthographicSize = GameManager.instance.cameraSize_;
-                Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
+                //Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
             }
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
@@ -40,7 +40,7 @@ public class CameraFollow : MonoBehaviour {
             {
                 GameManager.instance.cameraSize_++;
                 camera_.orthographicSize = GameManager.instance.cameraSize_;
-                Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
+                //Debug.Log("Cambiado camera size " + GameManager.instance.cameraSize_, DLogType.Setup);
             }
         }
     }

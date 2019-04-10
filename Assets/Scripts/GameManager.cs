@@ -11,12 +11,12 @@ public class GameManager : MonoBehaviour
     //Enemies
     [HideInInspector] public int enemiesDamage;
     [HideInInspector] public float enemiesVelocity;
-    [HideInInspector] public int enemiesFirerate;
+    [HideInInspector] public int enemiesHealth;
     [HideInInspector] public bool movimientoEnemigos = false;
 
     //Player
     [HideInInspector] public float playerDamage;
-    [HideInInspector] public int playerFirerate;
+    [HideInInspector] public int playerFirerate; //no varia
 
     //Dungeon
     [HideInInspector] public int dungeonSize;
@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
     public float slowDownTime = 1.2f;
     public bool sonidoActivo = true;
     public bool primerFormulario = false;
+    public bool enviarFormularios = true;
 
     public Text ColeccText;
     public Text CronoText;
@@ -61,11 +62,12 @@ public class GameManager : MonoBehaviour
 
     public GameObject unityFileDebug;
 
-    struct Jotason {
+    struct Jotason
+    {
         public WWWForm form;
         public string header;
     }
-    List<Jotason> formularios; 
+    List<Jotason> formularios;
 
     /////////////// Questionario    
     [HideInInspector] public int respuesta1 = 0;
@@ -73,18 +75,20 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public string nombreUsuario = "MyName";
     [HideInInspector] public int idUsuario = 0;
     [Header("Cuestionario")]
-    public GameObject cuestionarioElems;
-    //public GameObject nextButton;
-    //public GameObject nextText;    
+    public GameObject cuestionarioElems;    
 
     //Primer formulario
     public GameObject firstPanel;
     public GameObject acceptButton;
+    public GameObject loadingPanel;
+    public GameObject victoryPanel;
+    public GameObject defeatPanel;   
 
     public static GameManager instance;
 
     private void Awake()
     {
+        formularios = new List<Jotason>();
         if (instance != null && instance != this)
         {
             Destroy(this.gameObject);
@@ -99,13 +103,12 @@ public class GameManager : MonoBehaviour
         }
         DontDestroyOnLoad(this.gameObject);
         DontDestroyOnLoad(unityFileDebug);
-        DontDestroyOnLoad(canvas_);        
+        DontDestroyOnLoad(canvas_);
     }
 
     // Use this for initialization
     void Start()
-    {
-        formularios = new List<Jotason>();
+    {        
         if (primerFormulario)
         {
             Time.timeScale = 0;
@@ -125,12 +128,12 @@ public class GameManager : MonoBehaviour
         damageImage.color = Color.clear;
 
         //Form
-        Jotason json = new Jotason();        
+        Jotason json = new Jotason();
         WWWForm form = new WWWForm();
         CalcularIdUsuario();
         RellenarFormulario(form);
         json.form = form;
-        formularios.Add(json);        
+        formularios.Add(json);
     }
 
     public void InicializarFormulario()
@@ -162,7 +165,7 @@ public class GameManager : MonoBehaviour
     {
         coleccCogidos++;
         ActualizarInterfaz();
-        Debug.Log("Coleccionable recogido. Num recogidos: " + coleccCogidos + ", Colecc totales: " + DungeonInit.instance.coleccionables.Count.ToString() + ".", DLogType.Physics);
+        WriteForm("Coleccionable recogido. Num recogidos: " + coleccCogidos + ", Colecc totales: " + DungeonInit.instance.coleccionables.Count.ToString() + ".", DLogType.Physics);
     }
 
     //Actualizar variables dependientes de la dificultad (enemigos y dungeon)
@@ -175,17 +178,19 @@ public class GameManager : MonoBehaviour
         enemiesDefeated = 0;
 
         //Stats
-        playerDamage = 50 - dificultad * 2f;
-        enemiesDamage = 10 + dificultad * 2;
-        enemiesVelocity = 15 + 2.5f * dificultad;
-        //Dungeon
-        numEnemiesRoom = 4;
-        numRoomsMax = 2 + dificultad * 2;
-        numEnemiesMax = (int)(10 + dificultad * 4.5f);
-        coleccMax = 4 + dificultad / 3;
-        dungeonSize = 30;
+        playerDamage = Random.Range(25, 50);  //50 - dificultad * 2f;
+        enemiesDamage = Random.Range(10, 30); //10 + dificultad * 2;
+        enemiesVelocity = Random.Range(15, 40); //15 + 2.5f * dificultad;
+        enemiesHealth = Random.Range(75, 150);
 
-        if (dificultad > 6)
+        //Dungeon
+        numEnemiesRoom = Random.Range(1, 8); //4;
+        numRoomsMax = Random.Range(4, 35); // 2 + dificultad * 2;
+        numEnemiesMax = Random.Range(15, 60); //(int)(10 + dificultad * 4.5f);
+        coleccMax = Random.Range(4, 10); //4 + dificultad / 3;
+        dungeonSize = Random.Range(30, 80); //30;
+
+        /*if (dificultad > 6)
         {
             enemiesVelocity = 25 + 2f * dificultad;
             numEnemiesRoom = 6 + Random.Range(0, 3);
@@ -197,16 +202,20 @@ public class GameManager : MonoBehaviour
             numRoomsMax = 2 + dificultad * Random.Range(2, 4);
             dungeonSize = 60;
         }
+        */
         damageImage.color = Color.clear;
-        Debug.Log("Numero de intentos: " + numPartidas + ", Dificultad: " + dificultad + ".", DLogType.difficultyAdjusting);
-        Debug.Log("Racha de victorias: " + rachaVictorias + ", racha de derrotas: " + rachaDerrotas + ".", DLogType.difficultyAdjusting);
-        Debug.Log("Velocidad enemigos: " + enemiesVelocity + ", Player damage: " + playerDamage + ", Enemies damage: " + enemiesDamage + ".", DLogType.difficultyAdjusting);
-        Debug.Log("Coleccionables max: " + coleccMax + ".", DLogType.difficultyAdjusting);
+
+        //---------------------DATOS INICIALES---------------------------        
+        WriteForm("Numero de intentos: " + numPartidas + ", Dificultad: " + dificultad + ".", DLogType.datos);
+        WriteForm("Racha de victorias: " + rachaVictorias + ", racha de derrotas: " + rachaDerrotas + ".", DLogType.datos);
+        WriteForm("Velocidad enemigos: " + enemiesVelocity + ", Daño enemigos: " + enemiesDamage + ".", DLogType.datos);
+        WriteForm("Player damage: " + playerDamage, DLogType.datos);
+        WriteForm("Tamaño Dungeon: " + dungeonSize, DLogType.datos);
     }
 
     public void Victoria()
     {
-        tiempoTotalRonda = Time.timeSinceLevelLoad;        
+        tiempoTotalRonda = Time.timeSinceLevelLoad;
 
         rachaVictorias++;
         rachaDerrotas = 0;
@@ -221,16 +230,16 @@ public class GameManager : MonoBehaviour
                 dificultad++;
                 rachaVictorias = 0;
             }
-        }
-        Debug.Log("Tiempo de ronda: " + tiempoTotalRonda, DLogType.difficultyAdjusting);
-        Debug.Log("Disparos realizados: " + disparosRealizados + ", Disparos acertados: " + disparosAcertados + ".", DLogType.difficultyAdjusting);        
+        }        
+        WriteForm("Victoria: 1", DLogType.datos);
         Time.timeScale = 0;
+        victoryPanel.SetActive(true);
         MostrarCuestionario(true);
     }
 
     public void Derrota()
     {
-        tiempoTotalRonda = Time.timeSinceLevelLoad;        
+        tiempoTotalRonda = Time.timeSinceLevelLoad;
 
         rachaDerrotas++;
         rachaVictorias = 0;
@@ -241,10 +250,10 @@ public class GameManager : MonoBehaviour
                 rachaDerrotas = 0;
                 dificultad--;
             }
-        }
-        Debug.Log("Tiempo de ronda: " + tiempoTotalRonda, DLogType.System);
-        Debug.Log("Disparos realizados: " + disparosRealizados + ", Disparos acertados: " + disparosAcertados + ".", DLogType.difficultyAdjusting);        
+        }        
+        WriteForm("Victoria: 0", DLogType.datos);
         Time.timeScale = 0;
+        defeatPanel.SetActive(true);
         MostrarCuestionario(true);
     }
 
@@ -261,7 +270,7 @@ public class GameManager : MonoBehaviour
 
     public void MostrarCuestionario(bool resp)
     {
-        cuestionarioElems.SetActive(resp);        
+        cuestionarioElems.SetActive(resp);
     }
 
     public void toggleAudio()
@@ -274,13 +283,20 @@ public class GameManager : MonoBehaviour
     }
 
     public void Next()
-    {        
-        Debug.Log("Nivel divertido = " + respuesta1, DLogType.Quiz);
-        Debug.Log("Nivel dificil = " + respuesta2, DLogType.Quiz);
-        MostrarCuestionario(false);        
-        
+    {
+        WriteForm("Nivel divertido = " + respuesta1, DLogType.Quiz);
+        WriteForm("Nivel dificil = " + respuesta2, DLogType.Quiz);
+        //---------------------------DATOS FINALES----------------------------------------
+        WriteForm("Tiempo de ronda: " + tiempoTotalRonda, DLogType.datos);
+        WriteForm("Disparos realizados: " + disparosRealizados + ", Disparos acertados: " + disparosAcertados + ".", DLogType.datos);
+        WriteForm("Enemigos derrotados: " + enemiesDefeated, DLogType.datos);
+        WriteForm("Coleccionables cogidos: " + coleccCogidos, DLogType.datos);
+        WriteForm("VidaFin: " + DungeonInit.instance.Player_.GetComponentInChildren<PlayerHealth>().vida, DLogType.datos);
+
+        MostrarCuestionario(false);
+
         numPartidas++;
-        POST();                
+        POST();
     }
 
     public void SubirVolumen()
@@ -310,7 +326,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
         unityFileDebug.SetActive(true);
         CalcularIdUsuario();
-        RellenarFormulario(formularios[0].form);        
+        RellenarFormulario(formularios[0].form);
     }
 
     void RellenarFormulario(WWWForm form)
@@ -331,13 +347,14 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < hora.Length; i++)
         {
             idUsuario *= hora[i];
-        }        
+        }
     }
 
     public void POST()
     {
+        StopAllCoroutines();
         StartCoroutine(Upload());
-    }
+    }    
 
     IEnumerator Upload()
     {
@@ -348,63 +365,77 @@ public class GameManager : MonoBehaviour
         //string cosa = JsonUtility.ToJson(data); //Se queda vacio
         //form.AddField("jsonFile", data);
 
-        //form.AddBinaryData("jsonFile", bytes, name, "application/json");    //Antigua version, subiendo el fichero json  
+        //form.AddBinaryData("jsonFile", bytes, name, "application/json");    //Antigua version, subiendo el fichero json 
 
-        int numArchivos = 0;
-        foreach (Jotason archivo in formularios)
+        if (enviarFormularios)
         {
-            numArchivos++;
-            UnityWebRequest www = UnityWebRequest.Post("http://localhost:3000/posts", archivo.form);
-            yield return www.SendWebRequest();
+            loadingPanel.SetActive(true);
+            int numArchivos = 0;
+            foreach (Jotason archivo in formularios)
+            {
+                numArchivos++;
+                UnityWebRequest www = UnityWebRequest.Post("http://holstein.fdi.ucm.es:8443/posts", archivo.form); //http://localhost:3000/posts http://holstein.fdi.ucm.es:8443/posts
+                yield return www.SendWebRequest();
 
-            if (www.isNetworkError || www.isHttpError)
-            {
-                //Debug.LogError(www.error, DLogType.Form);
-                //Debug.LogError(www.responseCode, DLogType.Form);
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    //WriteFormError(www.error, DLogType.Form);
+                    //WriteFormError(www.responseCode, DLogType.Form);
+                }
+                else
+                {
+                    //WriteForm("Form upload complete!", DLogType.Form);
+                }
+                //
             }
-            else
-            {
-                //Debug.Log("Form upload complete!", DLogType.Form);
-            }
-            //
+            yield return new WaitUntil(() => numArchivos >= formularios.Count);
         }
-        yield return new WaitUntil(() => numArchivos >= formularios.Count);
 
         //Reiniciar pal siguiente nivel        
         formularios = new List<Jotason>();
-        CalcularIdUsuario();        
+        CalcularIdUsuario();
         SceneManager.LoadScene("Test_Dungeon");
         Time.timeScale = 1; //Reinicamos el tiempo
+        loadingPanel.SetActive(false);
+        victoryPanel.SetActive(false);
+        defeatPanel.SetActive(false);
         movimientoEnemigos = false;
         //unityFileDebug.SetActive(true);        
     }
 
-    public void WriteForm(string type, string log, string time)
+    public void WriteForm(string log, DLogType type)
+    {
+        StartCoroutine(WriteForm_coroutine(type.ToString(), log));
+    }
+
+    IEnumerator WriteForm_coroutine(string type, string log)
     {
         bool encontrado = false;
         foreach (Jotason archivo in formularios)
-        {
+        {           
             //Buscar si el campo esta
             if (archivo.header == type)
             {
-                archivo.form.AddField(type, log + " , time: " + time);
+                archivo.form.AddField(type, log + " , time: " + Time.timeSinceLevelLoad);
                 encontrado = true;
                 break;
             }
-
         }
         //Si no ha sido encontrado, lo añadimos
         if (!encontrado)
         {
             Jotason nuevo = new Jotason();
             nuevo.header = type;
-            WWWForm nuevoForm = new WWWForm();            
+            WWWForm nuevoForm = new WWWForm();
             RellenarFormulario(nuevoForm);
             nuevo.form = nuevoForm;
-            
-            nuevoForm.AddField(type, log + " , time: " + time);
-            formularios.Add(nuevo);            
-        }
 
-    }    
+            nuevoForm.AddField(type, log + " , time: " + Time.timeSinceLevelLoad);
+            formularios.Add(nuevo);
+        }
+        yield break;        
+
+    }
+
+
 }
